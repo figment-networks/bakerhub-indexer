@@ -1,3 +1,6 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  namespace :tezos, defaults: { format: :json } do
+    resources :cycles, only: [:index, :show]
+    resources :bakers, only: [:index, :show]
+  end
 end
