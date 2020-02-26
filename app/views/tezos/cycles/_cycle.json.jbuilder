@@ -1,6 +1,7 @@
 json.extract! tezos_cycle, :number,
                            :snapshot_cycle_number,
                            :snapshot_height,
+                           :rewards_unfrozen_cycle_number,
                            :total_rolls,
                            :start_height,
                            :end_height

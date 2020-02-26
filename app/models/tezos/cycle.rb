@@ -81,6 +81,10 @@ class Tezos::Cycle < ApplicationRecord
     blocks.order(id: :asc).last
   end
 
+  def rewards_unfrozen_cycle_number
+    number + preserved_cycles
+  end
+
   def missed_bakes_count
     # TODO: cache if we have all results
     return self[:missed_bakes_count] if self[:missed_bakes_count].present?
