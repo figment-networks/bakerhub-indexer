@@ -15,6 +15,10 @@ class Tezos::CyclesController < ApplicationController
   private
 
     def set_tezos_cycle
-      @tezos_cycle = Tezos::Cycle.find(params[:id])
+      @tezos_cycle = if params[:id] == "current"
+        Tezos::Cycle.order(id: :desc).first
+      else
+        Tezos::Cycle.find(params[:id])
+      end
     end
 end
