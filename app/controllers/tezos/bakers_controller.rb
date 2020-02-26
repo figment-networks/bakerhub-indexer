@@ -5,6 +5,7 @@ class Tezos::BakersController < ApplicationController
   # GET /tezos/bakers.json
   def index
     @tezos_bakers = Tezos::Baker.all
+    @tezos_bakers = @tezos_bakers.where("LOWER(id) = ? OR name ILIKE ?", params[:query].downcase, "%#{params[:query]}%") if params[:query]
   end
 
   # GET /tezos/bakers/1
