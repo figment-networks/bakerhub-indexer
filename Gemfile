@@ -29,6 +29,7 @@ gem 'activerecord-import'
 gem 'rest-client'
 gem 'typhoeus'
 gem 'scenic'
+gem 'whenever', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
