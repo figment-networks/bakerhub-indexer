@@ -4,7 +4,9 @@ json.extract! tezos_cycle, :number,
                            :rewards_unfrozen_cycle_number,
                            :total_rolls,
                            :start_height,
-                           :end_height
+                           :end_height,
+                           :cached_baking_stats,
+                           :cached_endorsing_stats
 json.start_time tezos_cycle.cached_start_time.to_i
 json.end_time tezos_cycle.cached_end_time.to_i
 json.seconds_remaining tezos_cycle.seconds_remaining
