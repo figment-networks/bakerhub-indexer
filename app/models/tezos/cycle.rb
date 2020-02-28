@@ -74,7 +74,7 @@ class Tezos::Cycle < ApplicationRecord
   end
 
   def blocks_left
-    blocks_per_cycle - blocks_count
+    (blocks_per_cycle || 4096) - (blocks_count || 0)
   end
 
   def most_recent_block
