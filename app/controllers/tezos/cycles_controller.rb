@@ -17,6 +17,8 @@ class Tezos::CyclesController < ApplicationController
     def set_tezos_cycle
       @tezos_cycle = if params[:id] == "current"
         Tezos::Cycle.order(id: :desc).first
+      elsif params[:id] == "latest_completed"
+        Tezos::Cycle.where(all_blocks_synced: true).order(id: :desc).first
       else
         Tezos::Cycle.find(params[:id])
       end
