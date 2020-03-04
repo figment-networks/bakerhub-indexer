@@ -5,4 +5,6 @@ class Tezos::Chain < ApplicationRecord
   has_many :cycles
 
   alias_attribute :ext_id, :slug
+
+  scope :primary, -> { find_by(primary: true) || order(created_at: :desc).first }
 end
