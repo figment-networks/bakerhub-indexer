@@ -13,20 +13,34 @@ task sync: :environment do
     puts "Finished in #{time} seconds"
   end
 
+  def rpc_url(chain, path)
+    URI::Generic.build(
+      scheme: chain.use_ssl_for_rpc? ? "https" : "http",
+      host: chain.rpc_host.presence || "localhost",
+      port: chain.rpc_port,
+      path: [chain.rpc_path.sub(/\/$/, ''), path].join("/")
+    ).to_s
+  end
+
   chain = Tezos::Chain.create_with(
     slug: "mainnet",
     internal_name: "NetXdQprcVkpaWU",
     primary: true,
-    rpc_host: Rails.application.credentials.rpc_host
+    rpc_host: Rails.application.credentials.rpc_host,
+    rpc_port: 443,
+    rpc_path: Rails.application.credentials.rpc_path,
   ).find_or_create_by(
-    name: "Mainnet"
+    name: "Mainnet",
+    use_ssl_for_rpc: true
   )
 
-  sync = Tezos::Sync.new(chain)
+  # sync = Tezos::Sync.new(chain)
 
   # SYNC BAKERS
   time "Syncing bakers" do
-    all_bakers = sync.registered_bakers
+    url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/head/context/raw/json/delegates")
+    res = Typhoeus.get(url)
+    all_bakers = JSON.parse(res.body)
     found_bakers = Tezos::Baker.pluck(:id)
     missing_bakers = all_bakers - found_bakers
     missing_bakers.each do |id|
@@ -48,7 +62,8 @@ task sync: :environment do
 
 
   # SYNC CYCLES
-  res = Typhoeus.get("http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/head/metadata")
+  url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/head/metadata")
+  res = Typhoeus.get(url)
   data = JSON.parse(res.body)
   current_cycle = data["level"]["cycle"]
   latest_block  = data["level"]["level"]
@@ -63,33 +78,6 @@ task sync: :environment do
       cycle.get_constants_from_rpc
     end
   end
-
-  # GET SNAPSHOT HEIGHT FOR EACH CYCLE #########################################
-  time "Getting snapshot height for cycles" do
-    cycles = chain.cycles
-    cycles_by_number = cycles.index_by(&:number)
-
-    cycles.select { |c| c.needs_snapshot? }.each do |cycle|
-      snapshot_cycle = cycles_by_number[cycle.snapshot_cycle_number]
-
-      res = Typhoeus.get("http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{cycle.start_height}/context/raw/json/cycle/#{cycle.number}/roll_snapshot")
-      snapshot_index = JSON.parse(res.body)
-      snapshot_height = ((cycle.snapshot_cycle_number) * snapshot_cycle.blocks_per_cycle + 1) + (snapshot_index + 1) * snapshot_cycle.blocks_per_roll_snapshot - 1
-      cycle.update_columns(snapshot_id: snapshot_height) if snapshot_height > 1
-    end
-  end
-  ##############################################################################
-
-  # GET TOTAL ROLLS FOR EACH CYCLE #############################################
-  time "Getting total rolls for cycles" do
-    chain.cycles.where(total_rolls: nil).where.not(snapshot_id: nil).find_each do |cycle|
-      res = Typhoeus.get("http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{cycle.snapshot.id_hash}/context/raw/json/rolls/owner/current")
-      data = JSON.parse(res.body)
-      total_rolls = data.is_a?(Array) ? data.length : nil
-      cycle.update_columns(total_rolls: total_rolls)
-    end
-  end
-  ##############################################################################
 
 
   cycle_ids_to_sync = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
@@ -109,10 +97,8 @@ task sync: :environment do
     missing_heights.each do |height|
       next if height == 1
 
-      request = Typhoeus::Request.new(
-        "http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{height}",
-        method: :get
-      )
+      url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/#{height}")
+      request = Typhoeus::Request.new(url, method: :get)
 
       request.on_complete do |response|
         if response.success?
@@ -158,10 +144,8 @@ task sync: :environment do
     missing_heights.each do |height|
       next if height == 1
 
-      request2 = Typhoeus::Request.new(
-        "http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{height}/helpers/endorsing_rights",
-        method: :get
-      )
+      url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/#{height}/helpers/endorsing_rights")
+      request2 = Typhoeus::Request.new(url, method: :get)
 
       request2.on_complete do |response|
         if response.success?
@@ -185,6 +169,39 @@ task sync: :environment do
 
     Tezos::Block.import blocks.values, validate: false
 
+
+
+
+    # GET SNAPSHOT HEIGHT FOR EACH CYCLE #########################################
+    time "Getting snapshot height for cycles" do
+      cycles = chain.cycles
+      cycles_by_number = cycles.index_by(&:number)
+
+      cycles.select { |c| c.needs_snapshot? }.each do |cycle|
+        snapshot_cycle = cycles_by_number[cycle.snapshot_cycle_number]
+        next unless snapshot_cycle
+
+        url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/#{cycle.start_height}/context/raw/json/cycle/#{cycle.number}/roll_snapshot")
+        res = Typhoeus.get(url)
+        snapshot_index = JSON.parse(res.body)
+        snapshot_height = ((cycle.snapshot_cycle_number) * snapshot_cycle.blocks_per_cycle + 1) + (snapshot_index + 1) * snapshot_cycle.blocks_per_roll_snapshot - 1
+        cycle.update_columns(snapshot_id: snapshot_height) if snapshot_height > 1
+      end
+    end
+    ##############################################################################
+
+    # GET TOTAL ROLLS FOR EACH CYCLE #############################################
+    time "Getting total rolls for cycles" do
+      chain.cycles.where(total_rolls: nil).where.not(snapshot_id: nil).find_each do |cycle|
+        url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/#{cycle.snapshot.id_hash}/context/raw/json/rolls/owner/current")
+        res = Typhoeus.get(url)
+        data = JSON.parse(res.body)
+        total_rolls = data.is_a?(Array) ? data.length : nil
+        cycle.update_columns(total_rolls: total_rolls)
+      end
+    end
+    ##############################################################################
+
     ## GET MISSED BAKING RIGHTS FOR BLOCKS WHERE P > 0 ##############################
     # TODO: some blocks (like 748291) seem to be missing right for certain priorities...
     # (that one had a priority of 2 but no rights for priority 1)...
@@ -195,10 +212,8 @@ task sync: :environment do
 
     Tezos::Block.missed.where(intended_baker_id: nil).find_each do |block|
       height = block.id - 1
-      request = Typhoeus::Request.new(
-        "http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{height}/helpers/baking_rights",
-        method: :get
-      )
+      url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/#{height}/helpers/baking_rights")
+      request = Typhoeus::Request.new(url, method: :get)
 
       request.on_complete do |response|
         if response.success?

@@ -137,7 +137,19 @@ class Tezos::Cycle < ApplicationRecord
 
   def get_constants_from_rpc
     if constants.nil?
-      update_columns(constants: Tezos::Sync.new(chain).get_constants([start_height - 1, 1].max))
+      url = rpc_url("chains/#{chain.internal_name}/blocks/#{[start_height - 1, 1].max}/context/constants")
+      res = Typhoeus.get(url)
+      data = JSON.parse(res.body)
+      update_columns(constants: data)
     end
+  end
+
+  def rpc_url(path)
+    URI::Generic.build(
+      scheme: chain.use_ssl_for_rpc? ? "https" : "http",
+      host: chain.rpc_host.presence || "localhost",
+      port: chain.rpc_port,
+      path: [chain.rpc_path.sub(/\/$/, ''), path].join("/")
+    ).to_s
   end
 end
