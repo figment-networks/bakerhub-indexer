@@ -86,18 +86,16 @@ class Tezos::Cycle < ApplicationRecord
   end
 
   def missed_bakes_count
-    # TODO: cache if we have all results
-    return self[:missed_bakes_count] if self[:missed_bakes_count].present?
     blocks.sum(:baker_priority)
   end
 
   def cached_endorsing_stats
-    return if self[:cached_endorsing_stats].nil?
+    return endorsing_stats.with_indifferent_access if self[:cached_endorsing_stats].nil?
     @cached_endorsing_stats ||= self[:cached_endorsing_stats].transform_values! { |v| Tezos::EndorsingStats.new(**v.symbolize_keys) }.with_indifferent_access
   end
 
   def cached_baking_stats
-    return if self[:cached_baking_stats].nil?
+    return baking_stats.with_indifferent_access if self[:cached_baking_stats].nil?
     @cached_baking_stats ||= self[:cached_baking_stats].transform_values! { |v| v.is_a?(Integer) ? v : Tezos::BakingStats.new(**v.symbolize_keys) }.with_indifferent_access
   end
 
