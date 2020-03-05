@@ -1,17 +1,4 @@
-require "benchmark"
-
 task sync: :environment do
-  #
-  # def time(message)
-  #   puts message
-  #
-  #   time = Benchmark.realtime do
-  #     yield
-  #   end
-  #
-  #   puts "Finished in #{time} seconds"
-  # end
-
   puts "Setting up Tezos Chain"
   chain = Tezos::Chain.create_with(
     slug: "mainnet",
@@ -29,6 +16,7 @@ task sync: :environment do
   Tezos::BakerSyncService.new(chain).run
 
   # SYNC CYCLES
+  # TODO: Save current cycle and latest block to Cycle
   url = Tezos::Rpc.new(chain).url("blocks/head/metadata")
   res = Typhoeus.get(url)
   data = JSON.parse(res.body)
@@ -37,23 +25,12 @@ task sync: :environment do
 
   puts "#{chain.name} is currently on Cycle #{current_cycle} at Block #{latest_block}"
 
-  cycles_to_sync = ((Tezos::Cycle.order(id: :asc).last&.number || 1)..current_cycle)
-  cycles_to_sync.each do |n|
-    Tezos::CycleSyncService.new(chain).run(n)
-  end
+  incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).pluck(:id)
+  missing_local_cycles    = (1..current_cycle).to_a - Tezos::Cycle.pluck(:id)
 
-  # time "Syncing cycles" do
-  #   all_cycles = (1..current_cycle)
-  #   found_cycles = Tezos::Cycle.pluck(:id)
-  #   missing_cycles = all_cycles.to_a - found_cycles
-  #   missing_cycles.each do |n|
-  #     puts "Seeding cycle #{n}"
-  #     cycle = Tezos::Cycle.create(id: n, chain: chain)
-  #     cycle.get_constants_from_rpc
-  #   end
-  # end
-  #
-  #
+  incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n).run }
+  missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n).run }
+
   # cycle_ids_to_sync = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
   # cycle_ids_to_sync.each do |n|
   #   hydra = Typhoeus::Hydra.new(max_concurrency: 100)
@@ -196,7 +173,7 @@ task sync: :environment do
   #   end
   #   #############################################################################################
   #
-  #   ## CACHE CYCLE START & END TIMES ############################################################
+  #   ## CACHE CYCLE BLOCKS COUNT #################################################################
   #   time "Caching blocks count" do
   #     Tezos::Cycle.where.not(all_blocks_synced: true).find_each do |cycle|
   #       cycle.update_columns(blocks_count: cycle.blocks.count)
