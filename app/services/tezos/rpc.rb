@@ -1,6 +1,12 @@
 module Tezos
-  module Rpc
-    def rpc_url(chain, path)
+  class Rpc
+    attr_reader :chain
+
+    def initialize(chain)
+      @chain = chain
+    end
+
+    def url(path)
       URI::Generic.build(
         scheme: chain.use_ssl_for_rpc? ? "https" : "http",
         host:   chain.rpc_host.presence || "localhost",

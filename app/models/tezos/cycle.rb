@@ -1,6 +1,4 @@
 class Tezos::Cycle < ApplicationRecord
-  extend Tezos::Rpc
-
   belongs_to :chain
   belongs_to :snapshot, class_name: "Tezos::Block", optional: true
   has_many :blocks
@@ -139,7 +137,7 @@ class Tezos::Cycle < ApplicationRecord
 
   def get_constants_from_rpc
     if constants.nil?
-      url = self.class.rpc_url(chain, "blocks/#{[start_height - 1, 1].max}/context/constants")
+      url = Tezos::Rpc.new(chain).url("blocks/#{[start_height - 1, 1].max}/context/constants")
       res = Typhoeus.get(url)
       data = JSON.parse(res.body)
       update_columns(constants: data)

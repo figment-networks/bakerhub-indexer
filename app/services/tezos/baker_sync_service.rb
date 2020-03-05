@@ -1,11 +1,16 @@
 module Tezos
   class BakerSyncService
-    extend Tezos::Rpc
-    extend Tezos::Timer
+    include Tezos::Timer
 
-    def self.run(chain)
+    attr_reader :chain
+
+    def initialize(chain)
+      @chain = chain
+    end
+
+    def run
       time "Syncing bakers" do
-        url = rpc_url(chain, "blocks/head/context/raw/json/delegates")
+        url = Tezos::Rpc.new(chain).url("blocks/head/context/raw/json/delegates")
         res = Typhoeus.get(url)
         all_bakers = JSON.parse(res.body)
         found_bakers = Tezos::Baker.pluck(:id)
