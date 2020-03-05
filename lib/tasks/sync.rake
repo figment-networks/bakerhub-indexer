@@ -7,9 +7,9 @@ task sync: :environment do
     rpc_host: Rails.application.credentials.rpc_host,
     rpc_port: 443,
     rpc_path: Rails.application.credentials.rpc_path,
-  ).find_or_create_by(
-    name: "Mainnet",
     use_ssl_for_rpc: true
+  ).find_or_create_by(
+    name: "Mainnet"
   )
 
   # SYNC BAKERS
