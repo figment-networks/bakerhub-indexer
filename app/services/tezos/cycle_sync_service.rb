@@ -2,19 +2,19 @@ module Tezos
   class CycleSyncService
     include Tezos::Timer
 
-    attr_reader :chain, :cycle_number, :cycle, :latest_block
+    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks
 
     def initialize(chain, cycle_number, latest_block)
       @chain = chain
       @cycle_number = cycle_number
       @latest_block = latest_block
       @cycle = Tezos::Cycle.find_or_create_by(id: cycle_number, chain: chain)
+      @blocks = {}
     end
 
     def run
       get_cycle_constants
       get_block_info
-      get_endorsing_rights
       import_blocks
       get_missed_bakes
       get_snapshot_height
@@ -29,12 +29,86 @@ module Tezos
     end
 
     def get_block_info
-    end
+      start_height = cycle.start_height
+      end_height = [cycle.end_height, latest_block].min
+      all_heights = (start_height..end_height).to_a
+      found_heights = cycle.blocks.pluck(:id)
+      missing_heights = all_heights - found_heights
 
-    def get_endorsing_rights
+      if missing_heights.any?
+        time "Get info for blocks #{missing_heights.first}..#{missing_heights.last}" do
+          missing_heights.each do |height|
+            next if height == 1
+
+            url = Tezos::Rpc.new(chain).url("blocks/#{height}")
+            request = Typhoeus::Request.new(url, method: :get)
+
+            request.on_complete do |response|
+              if response.success?
+                begin
+                  block_info = JSON.parse(response.body)
+
+                  ## Calculate bitmask of endorsed slots for previous block ##################
+                  if height > 2
+                    res = Tezos::EndorsementResults.new(bitmask: 0, endorsers: [])
+
+                    block_info["operations"].flatten.each do |op|
+                      endorsements = op["contents"].select { |subop| subop["kind"] == "endorsement" }
+                      endorsements.each do |endorsement|
+                        endorsement["metadata"]["slots"].each do |slot|
+                          res.set_true(slot + 1) # slots are 1-indexed in EndorsementResults and 0-indexed in RPC result
+                        end
+                      end
+                    end
+                  end
+                  ############################################################################
+
+                  blocks[height.to_s] = {
+                    id: height,
+                    id_hash: block_info["hash"],
+                    cycle_id: cycle.number,
+                    timestamp: Time.parse(block_info["header"]["timestamp"]),
+                    baker_id: block_info["metadata"]["baker"],
+                    baker_priority: block_info["header"]["priority"],
+                    endorsed_slots: res&.bitmask,
+                  }
+
+                  url = Tezos::Rpc.new(chain).url("blocks/#{height}/helpers/endorsing_rights")
+                  request2 = Typhoeus::Request.new(url, method: :get)
+
+                  request2.on_complete do |response|
+                    if response.success?
+                      endorsers = []
+                      data = JSON.parse(response.body)
+
+                      data.each do |right|
+                        right["slots"].each do |slot|
+                          endorsers[slot] = right["delegate"]
+                        end
+                      end
+
+                      blocks[height.to_s][:endorsers] = endorsers
+                    end
+                  end
+
+                  hydra.queue(request2)
+                rescue Exception => e
+                  puts "ERROR PARSING BLOCK #{height}"
+                  puts response.body
+                end
+              end
+            end
+
+            hydra.queue(request)
+          end
+
+          hydra.run
+        end
+      end
     end
 
     def import_blocks
+      Tezos::Block.import blocks.values, validate: false
     end
 
     def get_missed_bakes
@@ -85,6 +159,12 @@ module Tezos
           cycle.update_columns(all_blocks_synced: true)
         end
       end
+    end
+
+    private
+
+    def hydra
+      @hydra ||= Typhoeus::Hydra.new(max_concurrency: 100)
     end
   end
 end
