@@ -141,6 +141,8 @@ module Tezos
     end
 
     def cache_stats
+      cycle.reload
+
       time "Caching endoring stats, baking stats, blocks count" do
         cycle.update_columns(
           cached_endorsing_stats: cycle.endorsing_stats,
