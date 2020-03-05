@@ -28,8 +28,8 @@ task sync: :environment do
   incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).pluck(:id)
   missing_local_cycles    = (1..current_cycle).to_a - Tezos::Cycle.pluck(:id)
 
-  incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n).run }
-  missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n).run }
+  incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
+  missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
 
   # cycle_ids_to_sync = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
   # cycle_ids_to_sync.each do |n|
@@ -156,48 +156,7 @@ task sync: :environment do
   #   end
   #   Tezos::MissedBake.import missed_bakes, validate: false
   #   #################################################################################
-  #
-  #   ## CACHE ENDORSING STATS ####################################################################
-  #   time "Caching endoring stats" do
-  #     Tezos::Cycle.where("cached_endorsing_stats IS NULL OR all_blocks_synced != ?", true).find_each do |cycle|
-  #       cycle.update_columns(cached_endorsing_stats: cycle.endorsing_stats)
-  #     end
-  #   end
-  #   #############################################################################################
-  #
-  #   ## CACHE BAKING STATS #######################################################################
-  #   time "Caching baking stats" do
-  #     Tezos::Cycle.where("cached_baking_stats IS NULL OR all_blocks_synced != ?", true).find_each do |cycle|
-  #       cycle.update_columns(cached_baking_stats: cycle.baking_stats)
-  #     end
-  #   end
-  #   #############################################################################################
-  #
-  #   ## CACHE CYCLE BLOCKS COUNT #################################################################
-  #   time "Caching blocks count" do
-  #     Tezos::Cycle.where.not(all_blocks_synced: true).find_each do |cycle|
-  #       cycle.update_columns(blocks_count: cycle.blocks.count)
-  #     end
-  #   end
-  #   #############################################################################################
-  #
-  #   ## CACHE CYCLE START & END TIMES ############################################################
-  #   time "Caching cycle start & end times" do
-  #     Tezos::Cycle.where("cached_start_time IS NULL OR all_blocks_synced != ?", true).find_each do |cycle|
-  #       cycle.update_columns(cached_start_time: cycle.start_time, cached_end_time: cycle.end_time) if cycle.blocks_count > 0
-  #     end
-  #   end
-  #   #############################################################################################
-  #
-  #   ## KEEP TRACK OF CYCLES THAT WE HAVE ALL BLOCKS FOR SO WE CAN SKIP THEM IN NEXT SYNC RUN ####
-  #   Tezos::Cycle.where.not(all_blocks_synced: true).find_each do |cycle|
-  #     if cycle.blocks_count == cycle.blocks_per_cycle ||
-  #         cycle.number == 0 && cycle.blocks.count == cycle.blocks_per_cycle - 1
-  #       cycle.update_columns(all_blocks_synced: true)
-  #     end
-  #   end
-  #   #############################################################################################
-  #
+  
   #   # TODO: Also need reason for misses...could be tricky to keep things fast
   #
   #   puts "Finished in #{Time.now - start_time} seconds"
