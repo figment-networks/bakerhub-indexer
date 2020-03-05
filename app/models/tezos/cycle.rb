@@ -1,4 +1,6 @@
 class Tezos::Cycle < ApplicationRecord
+  extend Tezos::Rpc
+
   belongs_to :chain
   belongs_to :snapshot, class_name: "Tezos::Block", optional: true
   has_many :blocks
@@ -137,19 +139,10 @@ class Tezos::Cycle < ApplicationRecord
 
   def get_constants_from_rpc
     if constants.nil?
-      url = rpc_url("chains/#{chain.internal_name}/blocks/#{[start_height - 1, 1].max}/context/constants")
+      url = self.class.rpc_url(chain, "blocks/#{[start_height - 1, 1].max}/context/constants")
       res = Typhoeus.get(url)
       data = JSON.parse(res.body)
       update_columns(constants: data)
     end
-  end
-
-  def rpc_url(path)
-    URI::Generic.build(
-      scheme: chain.use_ssl_for_rpc? ? "https" : "http",
-      host: chain.rpc_host.presence || "localhost",
-      port: chain.rpc_port,
-      path: [chain.rpc_path.sub(/\/$/, ''), path].join("/")
-    ).to_s
   end
 end
