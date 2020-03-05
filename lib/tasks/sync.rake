@@ -34,8 +34,6 @@ task sync: :environment do
     use_ssl_for_rpc: true
   )
 
-  # sync = Tezos::Sync.new(chain)
-
   # SYNC BAKERS
   time "Syncing bakers" do
     url = rpc_url(chain, "chains/#{chain.internal_name}/blocks/head/context/raw/json/delegates")
