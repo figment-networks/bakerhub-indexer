@@ -25,8 +25,8 @@ task sync: :environment do
 
   puts "#{chain.name} is currently on Cycle #{current_cycle} at Block #{latest_block}"
 
-  incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).pluck(:id)
-  missing_local_cycles    = (1..current_cycle).to_a - Tezos::Cycle.pluck(:id)
+  incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
+  missing_local_cycles    = (0..current_cycle).to_a - Tezos::Cycle.pluck(:id)
 
   incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
   missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
@@ -156,7 +156,7 @@ task sync: :environment do
   #   end
   #   Tezos::MissedBake.import missed_bakes, validate: false
   #   #################################################################################
-  
+
   #   # TODO: Also need reason for misses...could be tricky to keep things fast
   #
   #   puts "Finished in #{Time.now - start_time} seconds"
