@@ -20,6 +20,9 @@ module Tezos
       get_snapshot_height
       get_total_rolls
       cache_stats
+      if !cycle.all_blocks_synced? && cycle.end_height < latest_block
+        run
+      end
     end
 
     def get_cycle_constants
