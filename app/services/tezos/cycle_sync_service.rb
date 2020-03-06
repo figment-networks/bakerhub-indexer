@@ -36,7 +36,7 @@ module Tezos
       missing_heights = all_heights - found_heights
 
       if missing_heights.any?
-        time "Get info for blocks #{missing_heights.first}..#{missing_heights.last}" do
+        time "Get info for #{missing_heights.length} blocks #{missing_heights.first}..#{missing_heights.last}" do
           missing_heights.each do |height|
             next if height == 1
 
