@@ -20,6 +20,8 @@ module Tezos
       get_snapshot_height
       get_total_rolls
       cache_stats
+
+      # If this cycle is over but we haven't gotten all blocks, run again
       if !cycle.all_blocks_synced? && cycle.end_height < latest_block
         run
       end

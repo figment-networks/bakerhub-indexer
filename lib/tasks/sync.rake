@@ -17,9 +17,7 @@ task sync: :environment do
 
   # SYNC CYCLES
   # TODO: Save current cycle and latest block to Cycle
-  url = Tezos::Rpc.new(chain).url("blocks/head/metadata")
-  res = Typhoeus.get(url)
-  data = JSON.parse(res.body)
+  data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
   current_cycle = data["level"]["cycle"]
   latest_block  = data["level"]["level"]
 

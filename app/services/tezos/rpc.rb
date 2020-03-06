@@ -14,5 +14,10 @@ module Tezos
         path:   [chain.rpc_path.sub(/\/$/, ''), "chains/#{chain.internal_name}", path].join("/")
       ).to_s
     end
+
+    def get(path)
+      res = Typhoeus.get(url(path))
+      JSON.parse(res.body)
+    end
   end
 end
