@@ -1,5 +1,6 @@
 # TODO: A better approach might be to get all baking rights (up to certain priority)
 # for each cycle, then we can figure out who missed their priorities locally without all these RPC calls
+# /chains/main/blocks/head/helpers/baking_rights?cycle=x&max_priority=3
 
 module Tezos
   class MissedBakeSyncService
