@@ -117,6 +117,7 @@ module Tezos
     end
 
     def get_missed_bakes
+      Tezos::MissedBakeSyncService.new(cycle).run
     end
 
     def get_snapshot_height
