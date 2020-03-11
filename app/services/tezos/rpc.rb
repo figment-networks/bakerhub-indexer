@@ -2,8 +2,12 @@ module Tezos
   class Rpc
     attr_reader :chain
 
-    def initialize(chain)
+    def initialize(chain = Tezos::Chain.primary)
       @chain = chain
+    end
+
+    def self.get(path)
+      new.get(path)
     end
 
     def url(path)
