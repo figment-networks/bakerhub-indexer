@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_04_213725) do
+ActiveRecord::Schema.define(version: 2020_03_11_194804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,8 @@ ActiveRecord::Schema.define(version: 2020_03_04_213725) do
     t.datetime "cached_start_time"
     t.datetime "cached_end_time"
     t.integer "blocks_count"
+    t.jsonb "baking_rights"
+    t.integer "baking_rights_max_priority"
     t.index ["chain_id"], name: "index_tezos_cycles_on_chain_id"
     t.index ["snapshot_id"], name: "index_tezos_cycles_on_snapshot_id"
   end
