@@ -1,8 +1,9 @@
 module Tezos
   class EndorsementResults
-    attr_accessor :bitmask, :endorsers
+    attr_accessor :height, :bitmask, :endorsers
 
-    def initialize(bitmask: 0, endorsers:)
+    def initialize(height:, bitmask: 0, endorsers:)
+      @height = height
       @bitmask = bitmask
       @endorsers = endorsers
     end
@@ -33,6 +34,16 @@ module Tezos
 
     def total_slots_count(baker_id: nil)
       total_slots(baker_id: baker_id).length
+    end
+
+    def missed_slot_details
+      missed_slots.map do |n|
+        {
+          height: height,
+          slot: n,
+          baker: endorsers[n-1]
+        }
+      end
     end
 
     def missed_slots(baker_id: nil)

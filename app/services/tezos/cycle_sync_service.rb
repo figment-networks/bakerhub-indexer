@@ -55,7 +55,7 @@ module Tezos
 
                   ## Calculate bitmask of endorsed slots for previous block ##################
                   if height > 2
-                    res = Tezos::EndorsementResults.new(bitmask: 0, endorsers: [])
+                    res = Tezos::EndorsementResults.new(height: height, bitmask: 0, endorsers: [])
 
                     block_info["operations"].flatten.each do |op|
                       endorsements = op["contents"].select { |subop| subop["kind"] == "endorsement" }
