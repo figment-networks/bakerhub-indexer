@@ -2,6 +2,15 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
   self.primary_key = :id
 
   belongs_to :cycle
+  has_many :missed_bakes, foreign_key: :block_id
+
+  alias_method :height, :id
+
+  delegate :missed?, :endorsed?, :by_slot,
+           :total_slots, :total_slots_count,
+           :endorsed_slots, :endorsed_slots_count,
+           :missed_slots, :missed_slots_count, :missed_slot_details,
+           to: :endorsement_results, allow_nil: true
 
   def readonly?
     true
@@ -11,9 +20,11 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
     @endorsement_results ||= Tezos::EndorsementResults.new(height: id, bitmask: self[:endorsed_slots], endorsers: endorsers) if self[:endorsed_slots].present?
   end
 
-  delegate :missed?, :endorsed?, :by_slot,
-           :total_slots, :total_slots_count,
-           :endorsed_slots, :endorsed_slots_count,
-           :missed_slots, :missed_slots_count, :missed_slot_details,
-           to: :endorsement_results, allow_nil: true
+  def stolen?
+    baker_priority > 0
+  end
+
+  def missed?
+    stolen?
+  end
 end
