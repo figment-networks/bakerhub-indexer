@@ -5,7 +5,13 @@ class Tezos::BlocksController < ApplicationController
   # GET /tezos/blocks.json
   def index
     limit = params[:limit] || 10
-    @tezos_blocks = Tezos::EndorsedBlock.includes(:missed_bakes).order(id: :desc).limit(limit)
+
+    @tezos_blocks = Tezos::EndorsedBlock.includes(:missed_bakes).order(id: :desc)
+    @tezos_blocks = if params[:from].present?
+      @tezos_blocks.where("id >= ?", params[:from])
+    else
+      @tezos_blocks.limit(limit)
+    end
   end
 
   # GET /tezos/blocks/1
