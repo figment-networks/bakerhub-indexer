@@ -17,6 +17,14 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
     true
   end
 
+  def self.missed
+    where("baker_priority > 0")
+  end
+
+  def self.with_missed_slots
+    where.not(endorsed_slots: 4294967295)
+  end
+
   def endorsement_results
     @endorsement_results ||= Tezos::EndorsementResults.new(height: id, bitmask: self[:endorsed_slots], endorsers: endorsers) if self[:endorsed_slots].present?
   end
