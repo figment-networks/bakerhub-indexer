@@ -6,7 +6,8 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events
   # GET /tezos/cycles/:id/events.json
   def index
-    @pagy, @blocks = pagy(@tezos_cycle.endorsed_blocks.includes(:baker, missed_bakes: :baker).order(id: :desc))
+    @blocks = @tezos_cycle.endorsed_blocks.includes(:baker, missed_bakes: :baker).order(id: :desc)
+    @pagy, @blocks = pagy(@blocks)
 
     events = []
     @blocks.each do |block|
