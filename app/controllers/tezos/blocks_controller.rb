@@ -7,6 +7,9 @@ class Tezos::BlocksController < ApplicationController
     limit = params[:limit] || 10
 
     @tezos_blocks = Tezos::EndorsedBlock.includes(:missed_bakes).order(id: :desc)
+
+    @tezos_blocks = @tezos_blocks.where("timestamp > ?", Time.at(params[:after].to_i)) if params[:after].present?
+
     @tezos_blocks = if params[:from].present?
       @tezos_blocks.where("id >= ?", params[:from])
     else
