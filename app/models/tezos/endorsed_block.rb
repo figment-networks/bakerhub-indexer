@@ -2,6 +2,7 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
   self.primary_key = :id
 
   belongs_to :cycle
+  belongs_to :baker
   has_many :missed_bakes, foreign_key: :block_id
 
   alias_method :height, :id
