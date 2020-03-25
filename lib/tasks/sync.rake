@@ -8,9 +8,9 @@ task sync: :environment do
       slug: "mainnet",
       internal_name: "NetXdQprcVkpaWU",
       primary: true,
-      rpc_host: Rails.application.credentials.rpc_host,
+      rpc_host: SECRETS.rpc_host,
       rpc_port: 443,
-      rpc_path: Rails.application.credentials.rpc_path,
+      rpc_path: SECRETS.rpc_path,
       use_ssl_for_rpc: true
     ).find_or_create_by(
       name: "Mainnet"

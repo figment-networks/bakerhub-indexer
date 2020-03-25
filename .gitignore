@@ -26,3 +26,5 @@ config/initializers/rack_attack.rb
 
 config/deploy/*.rb
 !config/deploy/sample.rb
+
+.ruby-version
