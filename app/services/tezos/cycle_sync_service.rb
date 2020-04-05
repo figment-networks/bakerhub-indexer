@@ -78,7 +78,7 @@ module Tezos
 
                         o["metadata"]["balance_updates"].each do |update|
                           if update["category"] == "rewards" && update["change"].to_i < 0
-                            data[:offender] = update["delegate"]
+                            data[:accuser] = update["delegate"]
                           elsif update["category"] == "rewards" && update["change"].to_i > 0
                             data[:offender] = update["delegate"]
                             data[:reward]   = update["change"].to_i
