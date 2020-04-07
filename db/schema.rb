@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_05_121715) do
+ActiveRecord::Schema.define(version: 2020_04_07_004557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,15 @@ ActiveRecord::Schema.define(version: 2020_04_05_121715) do
     t.index ["block_id"], name: "index_tezos_double_bakes_on_block_id"
   end
 
+  create_table "tezos_double_endorsements", force: :cascade do |t|
+    t.bigint "block_id", null: false
+    t.bigint "height"
+    t.string "accuser"
+    t.string "offender"
+    t.bigint "reward"
+    t.index ["block_id"], name: "index_tezos_double_endorsements_on_block_id"
+  end
+
   create_table "tezos_missed_bakes", force: :cascade do |t|
     t.string "baker_id", null: false
     t.bigint "block_id", null: false
@@ -98,6 +107,7 @@ ActiveRecord::Schema.define(version: 2020_04_05_121715) do
   add_foreign_key "tezos_cycles", "tezos_blocks", column: "snapshot_id", on_delete: :nullify
   add_foreign_key "tezos_cycles", "tezos_chains", column: "chain_id", on_delete: :cascade
   add_foreign_key "tezos_double_bakes", "tezos_blocks", column: "block_id"
+  add_foreign_key "tezos_double_endorsements", "tezos_blocks", column: "block_id"
   add_foreign_key "tezos_missed_bakes", "tezos_bakers", column: "baker_id", on_delete: :cascade
   add_foreign_key "tezos_missed_bakes", "tezos_blocks", column: "block_id", on_delete: :cascade
 

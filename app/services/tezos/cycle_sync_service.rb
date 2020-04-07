@@ -2,7 +2,7 @@ module Tezos
   class CycleSyncService
     include Tezos::Timer
 
-    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :double_bakes
+    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :double_bakes, :double_endorsements
 
     def initialize(chain, cycle_number, latest_block)
       @chain = chain
@@ -11,6 +11,7 @@ module Tezos
       @cycle = Tezos::Cycle.find_or_create_by(id: cycle_number, chain: chain)
       @blocks = {}
       @double_bakes = []
+      @double_endorsements = []
     end
 
     def run
@@ -78,14 +79,36 @@ module Tezos
 
                         o["metadata"]["balance_updates"].each do |update|
                           if update["category"] == "rewards" && update["change"].to_i < 0
-                            data[:accuser] = update["delegate"]
-                          elsif update["category"] == "rewards" && update["change"].to_i > 0
                             data[:offender] = update["delegate"]
-                            data[:reward]   = update["change"].to_i
+                          elsif update["category"] == "rewards" && update["change"].to_i > 0
+                            data[:accuser] = update["delegate"]
+                            data[:reward]  = update["change"].to_i
                           end
                         end
 
                         double_bakes << data
+                      end
+
+                      double_endorsement_ops = op["contents"].select { |subop| subop["kind"] == "double_endorsement_evidence" }
+                      double_endorsement_ops.each do |o|
+                        data = {
+                          block_id: height,
+                          height: o["op1"]["operations"]["level"],
+                          accuser: nil,
+                          offender: nil,
+                          reward: nil
+                        }
+
+                        o["metadata"]["balance_updates"].each do |update|
+                          if update["category"] == "rewards" && update["change"].to_i < 0
+                            data[:offender] = update["delegate"]
+                          elsif update["category"] == "rewards" && update["change"].to_i > 0
+                            data[:accuser] = update["delegate"]
+                            data[:reward]  = update["change"].to_i
+                          end
+                        end
+
+                        double_endorsements << data
                       end
                     end
                   end
@@ -138,6 +161,7 @@ module Tezos
     def import_blocks
       Tezos::Block.import blocks.values, validate: false
       Tezos::DoubleBake.import double_bakes, validate: false
+      Tezos::DoubleEndorsement.import double_endorsements, validate: false
     end
 
     def get_missed_bakes
