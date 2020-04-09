@@ -28,7 +28,8 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
   end
 
   def self.with_events
-    self.missed.or(self.with_missed_slots)
+    # self.missed.or(self.with_missed_slots)
+    all
   end
 
   def endorsement_results

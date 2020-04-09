@@ -8,13 +8,13 @@ class Tezos::EventsController < ApplicationController
   def index
     @blocks = @tezos_cycle.endorsed_blocks.includes(:baker, missed_bakes: :baker, double_bakes: [:accuser, :offender], double_endorsements: [:accuser, :offender]).order(id: :desc)
 
-    @blocks = if params[:types].nil? || ((params[:types].include?("missed_bakes") || params[:types].include?("steals")) && params[:types].include?("missed_endorsements"))
-      @blocks.with_events
-    elsif (params[:types].include?("missed_bakes") || params[:types].include?("steals")) && params[:types].exclude?("missed_endorsements")
-      @blocks.missed
-    elsif params[:types].exclude?("missed_bakes") && params[:types].exclude?("steals") && params[:types].include?("missed_endorsements")
-      @blocks.with_missed_slots
-    end
+    # @blocks = if params[:types].nil? || ((params[:types].include?("missed_bakes") || params[:types].include?("steals")) && params[:types].include?("missed_endorsements"))
+    #   @blocks.with_events
+    # elsif (params[:types].include?("missed_bakes") || params[:types].include?("steals")) && params[:types].exclude?("missed_endorsements")
+    #   @blocks.missed
+    # elsif params[:types].exclude?("missed_bakes") && params[:types].exclude?("steals") && params[:types].include?("missed_endorsements")
+    #   @blocks.with_missed_slots
+    # end
 
     @pagy, @blocks = pagy(@blocks)
 
@@ -36,6 +36,34 @@ class Tezos::EventsController < ApplicationController
         block.missed_slot_details.each do |details|
           baker = Tezos::Baker.find(details[:baker])
           events << { type: "missed_endorsement", height: block.height, baker_address: details[:baker], baker_name: baker.name, timestamp: block.timestamp, slot: details[:slot] }
+        end
+      end
+
+      if params[:types].nil? || params[:types].include?("double_bakes")
+        block.double_bakes.each do |double_bake|
+          events << {
+            type: "double_bake",
+            height: double_bake.block_id,
+            accuser_address: double_bake[:accuser],
+            accuser_name: double_bake.accuser.name,
+            offender_address: double_bake[:offender],
+            offender_name: double_bake.offender.name,
+            reward: double_bake.reward
+          }
+        end
+      end
+
+      if params[:types].nil? || params[:types].include?("double_endorsements")
+        block.double_endorsements.each do |double_endorsement|
+          events << {
+            type: "double_endorsement",
+            height: double_endorsement.block_id,
+            accuser_address: double_endorsement[:accuser],
+            accuser_name: double_endorsement.accuser.name,
+            offender_address: double_endorsement[:offender],
+            offender_name: double_endorsement.offender.name,
+            reward: double_endorsement.reward
+          }
         end
       end
     end
