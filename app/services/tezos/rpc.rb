@@ -21,7 +21,7 @@ module Tezos
     end
 
     def get(path, query = nil)
-      res = Typhoeus.get(url(path, query))
+      res = Typhoeus.get(url(path, query), timeout: 30)
       JSON.parse(res.body)
     end
   end
