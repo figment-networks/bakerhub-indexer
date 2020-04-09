@@ -6,7 +6,7 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events
   # GET /tezos/cycles/:id/events.json
   def index
-    @blocks = @tezos_cycle.endorsed_blocks.includes(:baker, missed_bakes: :baker).order(id: :desc)
+    @blocks = @tezos_cycle.endorsed_blocks.includes(:baker, missed_bakes: :baker, double_bakes: [:accuser, :offender], double_endorsements: [:accuser, :offender]).order(id: :desc)
 
     @blocks = if params[:types].nil? || ((params[:types].include?("missed_bakes") || params[:types].include?("steals")) && params[:types].include?("missed_endorsements"))
       @blocks.with_events

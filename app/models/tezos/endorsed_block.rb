@@ -4,6 +4,8 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
   belongs_to :cycle
   belongs_to :baker
   has_many :missed_bakes, foreign_key: :block_id
+  has_many :double_bakes, foreign_key: :block_id
+  has_many :double_endorsements, foreign_key: :block_id
 
   alias_method :height, :id
 
