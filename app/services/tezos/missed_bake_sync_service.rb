@@ -10,7 +10,7 @@ module Tezos
 
     def run
       time "Detecting missed bakes" do
-        max_priority = cycle.blocks.maximum(:baker_priority) + 1
+        max_priority = cycle.blocks.maximum(:baker_priority)
 
         if cycle.baking_rights.nil? || cycle.baking_rights_max_priority < max_priority
           rights = Tezos::Rpc.get(

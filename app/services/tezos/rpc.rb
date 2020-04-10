@@ -21,8 +21,13 @@ module Tezos
     end
 
     def get(path, query = nil)
-      res = Typhoeus.get(url(path, query))
-      JSON.parse(res.body)
+      request = Typhoeus::Request.new(url(path, query), timeout: 45)
+      chunks = []
+      request.on_body do |chunk|
+        chunks << chunk
+      end
+      request.run
+      JSON.parse(chunks.join)
     end
   end
 end
