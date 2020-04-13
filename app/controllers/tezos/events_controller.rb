@@ -44,8 +44,9 @@ class Tezos::EventsController < ApplicationController
           events << {
             type: "double_bake",
             height: double_bake.block_id,
-            accuser_address: double_bake[:accuser],
-            accuser_name: double_bake.accuser.name,
+            related_height: double_bake.height,
+            baker_address: double_bake[:accuser],
+            baker_name: double_bake.accuser.name,
             offender_address: double_bake[:offender],
             offender_name: double_bake.offender.name,
             reward: double_bake.reward
@@ -58,8 +59,9 @@ class Tezos::EventsController < ApplicationController
           events << {
             type: "double_endorsement",
             height: double_endorsement.block_id,
-            accuser_address: double_endorsement[:accuser],
-            accuser_name: double_endorsement.accuser.name,
+            related_height: double_endorsement.height,
+            baker_address: double_endorsement[:accuser],
+            baker_name: double_endorsement.accuser.name,
             offender_address: double_endorsement[:offender],
             offender_name: double_endorsement.offender.name,
             reward: double_endorsement.reward
