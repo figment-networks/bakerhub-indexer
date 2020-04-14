@@ -22,12 +22,24 @@ class Tezos::EventsController < ApplicationController
     @blocks.each do |block|
       if block.missed?
         if params[:types].nil? || params[:types].include?("steals")
-          events << { type: "steal", height: block.height, baker_address: block.baker_id, baker_name: block.baker.name, timestamp: block.timestamp }
+          events << {
+            type: "steal",
+            height: block.height,
+            baker_address: block.baker_id,
+            baker_name: block.baker.name,
+            timestamp: block.timestamp
+          }
         end
 
         if params[:types].nil? || params[:types].include?("missed_bakes")
           block.missed_bakes.each do |missed_bake|
-            events << { type: "missed_bake", height: block.height, baker_address: missed_bake.baker_id, baker_name: missed_bake.baker.name, timestamp: block.timestamp }
+            events << {
+              type: "missed_bake",
+              height: block.height,
+              baker_address: missed_bake.baker_id,
+              baker_name: missed_bake.baker.name,
+              timestamp: block.timestamp
+            }
           end
         end
       end
@@ -35,7 +47,14 @@ class Tezos::EventsController < ApplicationController
       if params[:types].nil? || params[:types].include?("missed_endorsements")
         block.missed_slot_details.each do |details|
           baker = Tezos::Baker.find(details[:baker])
-          events << { type: "missed_endorsement", height: block.height, baker_address: details[:baker], baker_name: baker.name, timestamp: block.timestamp, slot: details[:slot] }
+          events << {
+            type: "missed_endorsement",
+            height: block.height,
+            baker_address: details[:baker],
+            baker_name: baker.name,
+            timestamp: block.timestamp,
+            slot: details[:slot]
+          }
         end
       end
 
