@@ -5,6 +5,7 @@ class Tezos::Cycle < ApplicationRecord
   has_many :endorsed_blocks
   has_many :bakers, through: :blocks
   has_many :missed_bakes, through: :blocks
+  has_many :missed_bake_events, through: :blocks
 
   store_accessor :constants, :quorum_max,
                              :quorum_min,
