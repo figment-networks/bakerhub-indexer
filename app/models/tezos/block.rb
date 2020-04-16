@@ -21,8 +21,7 @@ class Tezos::Block < ApplicationRecord
 
   def timestamp
     return self[:timestamp] if self[:timestamp].present?
-    res = Typhoeus.get("http://#{chain.rpc_host}:8732/chains/#{chain.internal_name}/blocks/#{id}/header")
-    data = JSON.parse(res.body)
+    data = Tezos::Rpc.get("blocks/#{id}/header")
     time = Time.parse(data["timestamp"])
     update_columns(timestamp: time)
     return time

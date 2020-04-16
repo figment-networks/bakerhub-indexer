@@ -71,17 +71,17 @@ module Tezos
                       double_baking_ops.each do |o|
                         data = {
                           block_id: height,
-                          height: o["bh1"]["level"],
-                          accuser: nil,
-                          offender: nil,
+                          related_block_id: o["bh1"]["level"],
+                          sender_id: nil,
+                          receiver_id: nil,
                           reward: nil
                         }
 
                         o["metadata"]["balance_updates"].each do |update|
                           if update["category"] == "rewards" && update["change"].to_i < 0
-                            data[:offender] = update["delegate"]
+                            data[:receiver_id] = update["delegate"]
                           elsif update["category"] == "rewards" && update["change"].to_i > 0
-                            data[:accuser] = update["delegate"]
+                            data[:sender_id] = update["delegate"]
                             data[:reward]  = update["change"].to_i
                           end
                         end
@@ -93,17 +93,17 @@ module Tezos
                       double_endorsement_ops.each do |o|
                         data = {
                           block_id: height,
-                          height: o["op1"]["operations"]["level"],
-                          accuser: nil,
-                          offender: nil,
+                          related_block_id: o["op1"]["operations"]["level"],
+                          sender_id: nil,
+                          receiver_id: nil,
                           reward: nil
                         }
 
                         o["metadata"]["balance_updates"].each do |update|
                           if update["category"] == "rewards" && update["change"].to_i < 0
-                            data[:offender] = update["delegate"]
+                            data[:receiver_id] = update["delegate"]
                           elsif update["category"] == "rewards" && update["change"].to_i > 0
-                            data[:accuser] = update["delegate"]
+                            data[:sender_id] = update["delegate"]
                             data[:reward]  = update["change"].to_i
                           end
                         end
@@ -160,8 +160,8 @@ module Tezos
 
     def import_blocks
       Tezos::Block.import blocks.values, validate: false
-      Tezos::DoubleBake.import double_bakes, validate: false
-      Tezos::DoubleEndorsement.import double_endorsements, validate: false
+      Tezos::Event::DoubleBake.import double_bakes, validate: false
+      Tezos::Event::DoubleEndorsement.import double_endorsements, validate: false
     end
 
     def get_missed_bakes
