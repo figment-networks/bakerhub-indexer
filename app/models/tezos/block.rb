@@ -4,6 +4,7 @@ class Tezos::Block < ApplicationRecord
   belongs_to :baker
   belongs_to :intended_baker, class_name: "Tezos::Baker", inverse_of: :baking_rights, optional: true
   has_many :missed_bakes
+  has_many :missed_bake_events, class_name: "Tezos::Event::MissedBake"
 
   scope :baked_by, -> (baker) { where(baker: baker) }
   scope :baked, -> { where.not(baker_id: nil) }

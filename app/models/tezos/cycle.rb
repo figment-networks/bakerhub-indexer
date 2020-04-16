@@ -108,9 +108,9 @@ class Tezos::Cycle < ApplicationRecord
       if block.stolen?
         data[block.baker_id].blocks_stolen += 1
 
-        block.missed_bakes.each do |missed_bake|
-          data[missed_bake.baker_id] ||= Tezos::BakingStats.new
-          data[missed_bake.baker_id].blocks_missed += 1
+        block.missed_bake_events.each do |missed_bake|
+          data[missed_bake.sender_id] ||= Tezos::BakingStats.new
+          data[missed_bake.sender_id].blocks_missed += 1
         end
       end
     end
