@@ -6,7 +6,7 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events
   # GET /tezos/cycles/:id/events.json
   def index
-    events = @tezos_cycle.events.order(block_id: :desc)
+    events = @tezos_cycle.events.includes(:sender, :receiver).order(block_id: :desc)
     # TODO: Filter according to params[:types]
     @pagy, @events = pagy(events)
     events_json = @events.as_json(methods: :type)
