@@ -7,7 +7,12 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events.json
   def index
     events = @tezos_cycle.events.includes(:sender, :receiver).order(block_id: :desc)
-    # TODO: Filter according to params[:types]
+
+    if params[:types]
+      types = params[:types].map { |t| "Tezos::Event::#{t.classify}" }
+      events = events.where(type: types)
+    end
+
     @pagy, @events = pagy(events)
     events_json = @events.as_json(methods: :type)
   end
