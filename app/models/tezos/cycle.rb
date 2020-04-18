@@ -7,6 +7,10 @@ class Tezos::Cycle < ApplicationRecord
   has_many :missed_bakes, through: :blocks
   has_many :events, through: :blocks
   has_many :missed_bake_events, through: :blocks
+  has_many :missed_endorsement_events, through: :blocks
+  has_many :steal_events, through: :blocks
+  has_many :double_bake_events, through: :blocks
+  has_many :double_endorsement_events, through: :blocks
 
   store_accessor :constants, :quorum_max,
                              :quorum_min,

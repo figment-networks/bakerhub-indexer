@@ -6,6 +6,10 @@ class Tezos::Block < ApplicationRecord
   has_many :missed_bakes
   has_many :events
   has_many :missed_bake_events, class_name: "Tezos::Event::MissedBake"
+  has_many :missed_endorsement_events, class_name: "Tezos::Event::MissedEndorsement"
+  has_many :steal_events, class_name: "Tezos::Event::Steal"
+  has_many :double_bake_events, class_name: "Tezos::Event::DoubleBake"
+  has_many :double_endorsement_events, class_name: "Tezos::Event::DoubleEndorsement"
 
   scope :baked_by, -> (baker) { where(baker: baker) }
   scope :baked, -> { where.not(baker_id: nil) }
