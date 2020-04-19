@@ -2,7 +2,7 @@ module Tezos
   class CycleSyncService
     include Tezos::Timer
 
-    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :double_bakes, :double_endorsements
+    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :events
 
     def initialize(chain, cycle_number, latest_block)
       @chain = chain
@@ -10,8 +10,7 @@ module Tezos
       @latest_block = latest_block
       @cycle = Tezos::Cycle.find_or_create_by(id: cycle_number, chain: chain)
       @blocks = {}
-      @double_bakes = []
-      @double_endorsements = []
+      @events = []
     end
 
     def run
@@ -70,6 +69,7 @@ module Tezos
                       double_baking_ops = op["contents"].select { |subop| subop["kind"] == "double_baking_evidence" }
                       double_baking_ops.each do |o|
                         data = {
+                          type: "Tezos::Event::DoubleBake",
                           block_id: height,
                           related_block_id: o["bh1"]["level"],
                           sender_id: nil,
@@ -86,12 +86,13 @@ module Tezos
                           end
                         end
 
-                        double_bakes << data
+                        events << data
                       end
 
                       double_endorsement_ops = op["contents"].select { |subop| subop["kind"] == "double_endorsement_evidence" }
                       double_endorsement_ops.each do |o|
                         data = {
+                          type: "Tezos::Event::DoubleEndorsement",
                           block_id: height,
                           related_block_id: o["op1"]["operations"]["level"],
                           sender_id: nil,
@@ -108,7 +109,7 @@ module Tezos
                           end
                         end
 
-                        double_endorsements << data
+                        events << data
                       end
                     end
                   end
@@ -160,8 +161,7 @@ module Tezos
 
     def import_blocks
       Tezos::Block.import blocks.values, validate: false
-      Tezos::Event::DoubleBake.import double_bakes, validate: false
-      Tezos::Event::DoubleEndorsement.import double_endorsements, validate: false
+      Tezos::Event.import events, validate: false
     end
 
     def get_missed_bakes
