@@ -18,6 +18,7 @@ module Tezos
       get_block_info
       import_blocks
       get_missed_bakes
+      get_missed_endorsements
       get_snapshot_height
       get_total_rolls
       cache_stats
@@ -166,6 +167,10 @@ module Tezos
 
     def get_missed_bakes
       Tezos::MissedBakeSyncService.new(cycle).run
+    end
+
+    def get_missed_endorsements
+      Tezos::MissedEndorsementSyncService.new(cycle).run
     end
 
     def get_snapshot_height

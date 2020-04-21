@@ -22,12 +22,12 @@ module Tezos
           rights = cycle.baking_rights
         end
 
-        missed_bakes = []
-        steals = []
+        events = []
         intended_bakers = {}
 
         cycle.blocks.missed.where(intended_baker_id: nil).find_each do |block|
-          steals << {
+          events << {
+            type: "Tezos::Event::Steal",
             block_id: block.id,
             sender_id: block.baker_id,
           }
@@ -35,7 +35,8 @@ module Tezos
           block_rights = rights.select { |r| r["level"] == block.height }
           block_rights.each do |r|
             if r["priority"] < block.baker_priority
-              missed_bakes << {
+              events << {
+                type: "Tezos::Event::MissedBake",
                 block_id: block.id,
                 sender_id: r["delegate"],
                 priority: r["priority"]
@@ -49,8 +50,7 @@ module Tezos
           Tezos::Baker.find_or_create_by(id: baker_id, chain: cycle.chain)
           Tezos::Block.find(height.to_i).update_columns(intended_baker_id: baker_id)
         end
-        Tezos::Event::MissedBake.import missed_bakes, validate: false
-        Tezos::Event::Steal.import steals, validate: false
+        Tezos::Event.import events, validate: false
       end
     end
   end
