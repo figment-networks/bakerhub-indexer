@@ -30,6 +30,7 @@ module Tezos
             type: "Tezos::Event::Steal",
             block_id: block.id,
             sender_id: block.baker_id,
+            priority: nil
           }
 
           block_rights = rights.select { |r| r["level"] == block.height }
