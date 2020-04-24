@@ -6,15 +6,22 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events
   # GET /tezos/cycles/:id/events.json
   def index
-    events = @tezos_cycle.events.includes(:sender, :receiver).order(block_id: :desc)
+    events = @tezos_cycle.events.includes(:block, :sender, :receiver).order(block_id: :desc)
 
     if params[:types]
       types = params[:types].map { |t| "Tezos::Event::#{t.classify}" }
       events = events.where(type: types)
     end
 
+    if params[:after_timestamp].present?
+      events = events.where("tezos_blocks.timestamp > ?", Time.at(params[:after_timestamp].to_i))
+    end
+
+    if params[:after_height].present?
+      events = events.where("tezos_blocks.id > ?", params[:after_height].to_i)
+    end
+
     @pagy, @events = pagy(events)
-    events_json = @events.as_json(methods: :type)
   end
 
   private
