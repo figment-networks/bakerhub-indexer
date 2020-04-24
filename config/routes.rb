@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :cycles, only: [:index, :show] do
       resources :events, only: :index
     end
+    resources :events, only: :index
     resources :bakers, only: [:index, :show]
   end
 end

@@ -6,7 +6,11 @@ class Tezos::EventsController < ApplicationController
   # GET /tezos/cycles/:id/events
   # GET /tezos/cycles/:id/events.json
   def index
-    events = @tezos_cycle.events.includes(:block, :sender, :receiver).order(block_id: :desc)
+    events = if @tezos_cycle
+      @tezos_cycle.events.includes(:block, :sender, :receiver).order(block_id: :desc)
+    else
+      Tezos::Event.includes(:block, :sender, :receiver).order(block_id: :desc).references(:block)
+    end
 
     if params[:types]
       types = params[:types].map { |t| "Tezos::Event::#{t.classify}" }
@@ -27,6 +31,7 @@ class Tezos::EventsController < ApplicationController
   private
 
     def set_tezos_cycle
+      return if params[:cycle_id].nil?
       @tezos_cycle = if params[:cycle_id] == "current"
         Tezos::Cycle.order(id: :desc).first
       elsif params[:cycle_id] == "latest_completed"
