@@ -25,7 +25,7 @@ class Tezos::EventsController < ApplicationController
       events = events.where("tezos_blocks.id > ?", params[:after_height].to_i)
     end
 
-    if params[:pagination] == 'false'
+    if params[:paginate] == 'false'
       @pagy = {}
       @events = events
     else
