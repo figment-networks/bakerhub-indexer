@@ -25,7 +25,7 @@ module Tezos
         end
 
         Tezos::Event.import events, validate: false
-        cycle.update(latest_missed_endorsement_synced: blocks.last.id)
+        cycle.update(latest_missed_endorsement_synced: blocks.last.id) if blocks.any?
       end
     end
   end
