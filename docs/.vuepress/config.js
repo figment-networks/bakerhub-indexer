@@ -1,4 +1,5 @@
 module.exports = {
+  base: '/bakerhub-indexer/',
   title: 'BakerHub Indexer',
   themeConfig: {
     nav: [
