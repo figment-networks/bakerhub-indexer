@@ -193,10 +193,10 @@ Get details about a single Cycle
 
 Param | Type | Notes
 ------|------|------
-id * | string | Cycle number. Can also be `current` or `latest_completed`
+id * | string | Cycle number. Can also be `current` (default) or `latest_completed`
 
 ```ruby
-Indexer::Cycle.retrieve(id: 225)
+Indexer::Cycle.retrieve("225")
 ```
 
 **Example Response**
