@@ -28,3 +28,4 @@ config/deploy/*.rb
 !config/deploy/sample.rb
 
 .ruby-version
+/node_modules/*
