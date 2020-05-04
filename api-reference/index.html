@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>API Reference | BakerHub Indexer</title>
+    <meta name="generator" content="VuePress 1.4.1">
+    
+    <meta name="description" content="">
+    <link rel="preload" href="/bakerhub-indexer/assets/css/0.styles.6fb2b149.css" as="style"><link rel="preload" href="/bakerhub-indexer/assets/js/app.b7a7a60d.js" as="script"><link rel="preload" href="/bakerhub-indexer/assets/js/2.6c191659.js" as="script"><link rel="preload" href="/bakerhub-indexer/assets/js/6.0d3e66b1.js" as="script"><link rel="preload" href="/bakerhub-indexer/assets/js/3.63ecda92.js" as="script"><link rel="prefetch" href="/bakerhub-indexer/assets/js/4.4ed3b92f.js"><link rel="prefetch" href="/bakerhub-indexer/assets/js/5.1c15dcfc.js"><link rel="prefetch" href="/bakerhub-indexer/assets/js/7.08b90ca0.js">
+    <link rel="stylesheet" href="/bakerhub-indexer/assets/css/0.styles.6fb2b149.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/bakerhub-indexer/" class="home-link router-link-active"><!----> <span class="site-name">BakerHub Indexer</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/bakerhub-indexer/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/bakerhub-indexer/api-reference/" class="nav-link router-link-exact-active router-link-active">
+  API Reference
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/bakerhub-indexer/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/bakerhub-indexer/api-reference/" class="nav-link router-link-exact-active router-link-active">
+  API Reference
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>API Reference</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bakerhub-indexer/api-reference/#note-about-api-client" class="sidebar-link">Note about API Client</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bakerhub-indexer/api-reference/#bakers" class="sidebar-link">Bakers</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bakerhub-indexer/api-reference/#list-bakers" class="sidebar-link">List Bakers</a></li><li class="sidebar-sub-header"><a href="/bakerhub-indexer/api-reference/#retrieve-a-baker" class="sidebar-link">Retrieve a Baker</a></li></ul></li><li><a href="/bakerhub-indexer/api-reference/#cycles" class="sidebar-link">Cycles</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bakerhub-indexer/api-reference/#retrieve-a-cycle" class="sidebar-link">Retrieve a Cycle</a></li></ul></li><li><a href="/bakerhub-indexer/api-reference/#events" class="sidebar-link">Events</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bakerhub-indexer/api-reference/#list-events" class="sidebar-link">List Events</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="api-reference"><a href="#api-reference" class="header-anchor">#</a> API Reference</h1> <h2 id="note-about-api-client"><a href="#note-about-api-client" class="header-anchor">#</a> Note about API Client</h2> <p>Currently the client code is in BakerHub. You can still make requests directly to the API, but the code samples in these API Docs won't work unless we pull the client code out as a separate gem.</p> <h2 id="bakers"><a href="#bakers" class="header-anchor">#</a> Bakers</h2> <h3 id="list-bakers"><a href="#list-bakers" class="header-anchor">#</a> List Bakers <span class="badge tip" style="vertical-align:top;" data-v-76a02c50>GET</span></h3> <p><code>https://bakerhub-indexer.figment.network/tezos/bakers</code></p> <p>Returns a list of all Bakers</p> <p><strong>Query Params</strong></p> <table><thead><tr><th>Param</th> <th>Type</th> <th>Notes</th></tr></thead> <tbody><tr><td>query</td> <td>string</td> <td>Search Bakers by name or address</td></tr></tbody></table> <div class="language-ruby extra-class"><pre class="language-ruby"><code><span class="token comment"># List all Bakers</span>
+<span class="token constant">Indexer</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">Baker</span><span class="token punctuation">.</span>list<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># With a search query</span>
+<span class="token constant">Indexer</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">Baker</span><span class="token punctuation">.</span>list<span class="token punctuation">(</span>query<span class="token punctuation">:</span> <span class="token string">&quot;Figment&quot;</span><span class="token punctuation">)</span>
+</code></pre></div><p><strong>Example Response</strong></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span><span class="token string">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/bakers/tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA&quot;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token string">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;tz2KuCcKSyMzs8wRJXzjqoHgojPkSUem8ZBS&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/bakers/tz2KuCcKSyMzs8wRJXzjqoHgojPkSUem8ZBS&quot;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token string">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;tz2KrmHRWu7b7Vr3GYQ3SJ41xaW64PiqWBYm&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/bakers/tz2KrmHRWu7b7Vr3GYQ3SJ41xaW64PiqWBYm&quot;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token string">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;tz2JMPu9yVKuX2Au8UUbp7YrKBZJSdYhgwwu&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/bakers/tz2JMPu9yVKuX2Au8UUbp7YrKBZJSdYhgwwu&quot;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span><span class="token string">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;tz2E3BvcMiGvFEgNVdsAiwVvPHcwJDTA8wLt&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/bakers/tz2E3BvcMiGvFEgNVdsAiwVvPHcwJDTA8wLt&quot;</span><span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre></div><h3 id="retrieve-a-baker"><a href="#retrieve-a-baker" class="header-anchor">#</a> Retrieve a Baker <span class="badge tip" style="vertical-align:top;" data-v-76a02c50>GET</span></h3> <p><code>https://bakerhub-indexer.figment.network/tezos/bakers/:id</code></p> <p>Get details about a single Baker</p> <p><strong>Path Params</strong></p> <table><thead><tr><th>Param</th> <th>Type</th> <th>Notes</th></tr></thead> <tbody><tr><td>id *</td> <td>string</td> <td>Baker address</td></tr></tbody></table> <div class="language-ruby extra-class"><pre class="language-ruby"><code><span class="token constant">Indexer</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">Baker</span><span class="token punctuation">.</span>retrieve<span class="token punctuation">(</span><span class="token string">&quot;tz1Scdr2HsZiQjc7bHMeBbmDRXYVvdhjJbBh&quot;</span><span class="token punctuation">)</span>
+</code></pre></div><p><strong>Example Response</strong></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">{</span>
+  <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;url&quot;</span><span class="token operator">:</span> <span class="token string">&quot;http://localhost:3000/tezos/bakers/tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;lifetime_baking_stats&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">11</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;lifetime_endorsing_stats&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">403</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">402</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;baking_stats_history&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;0&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;1&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;2&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;3&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;4&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;5&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;6&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;7&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;8&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;9&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;10&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;blocks_baked&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_missed&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;blocks_stolen&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;endorsing_stats_history&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;0&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;1&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;2&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;3&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;4&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;5&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;6&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;7&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;8&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;9&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;10&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;total_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;endorsed_slots&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="cycles"><a href="#cycles" class="header-anchor">#</a> Cycles</h2> <h3 id="retrieve-a-cycle"><a href="#retrieve-a-cycle" class="header-anchor">#</a> Retrieve a Cycle <span class="badge tip" style="vertical-align:top;" data-v-76a02c50>GET</span></h3> <p><code>https://bakerhub-indexer.figment.network/tezos/cycles/:id</code></p> <p>Get details about a single Cycle</p> <p><strong>Path Params</strong></p> <table><thead><tr><th>Param</th> <th>Type</th> <th>Notes</th></tr></thead> <tbody><tr><td>id *</td> <td>string</td> <td>Cycle number. Can also be <code>current</code> (default) or <code>latest_completed</code></td></tr></tbody></table> <div class="language-ruby extra-class"><pre class="language-ruby"><code><span class="token constant">Indexer</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">Cycle</span><span class="token punctuation">.</span>retrieve<span class="token punctuation">(</span><span class="token string">&quot;225&quot;</span><span class="token punctuation">)</span>
+</code></pre></div><p><strong>Example Response</strong></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">{</span>
+  <span class="token string">&quot;number&quot;</span><span class="token operator">:</span> <span class="token number">226</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;snapshot_cycle_number&quot;</span><span class="token operator">:</span> <span class="token number">219</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;snapshot_height&quot;</span><span class="token operator">:</span> <span class="token number">898048</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;rewards_unfrozen_cycle_number&quot;</span><span class="token operator">:</span> <span class="token number">231</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;total_rolls&quot;</span><span class="token operator">:</span> <span class="token number">81039</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;start_height&quot;</span><span class="token operator">:</span> <span class="token number">925697</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;end_height&quot;</span><span class="token operator">:</span> <span class="token number">929792</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;cached_baking_stats&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;cached_endorsing_stats&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;start_time&quot;</span><span class="token operator">:</span> <span class="token number">1587872635</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;end_time&quot;</span><span class="token operator">:</span> <span class="token number">1588118716</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;seconds_remaining&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;blocks_left&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;missed_priorities&quot;</span><span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;missed_slots&quot;</span><span class="token operator">:</span> <span class="token number">506</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;url&quot;</span><span class="token operator">:</span> <span class="token string">&quot;https://bakerhub-indexer.figment.network/tezos/cycles/226&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="events"><a href="#events" class="header-anchor">#</a> Events</h2> <h3 id="list-events"><a href="#list-events" class="header-anchor">#</a> List Events <span class="badge tip" style="vertical-align:top;" data-v-76a02c50>GET</span></h3> <p><code>https://bakerhub-indexer.figment.network/tezos/(:cycle_id)/events</code></p> <p>List Tezos Events</p> <p><strong>Path Params</strong></p> <table><thead><tr><th>Param</th> <th>Type</th> <th>Notes</th></tr></thead> <tbody><tr><td>cycle_id</td> <td>integer</td> <td>ID of the cycle you would like Events for</td></tr></tbody></table> <p><strong>Query Params</strong></p> <table><thead><tr><th>Param</th> <th>Type</th> <th>Notes</th></tr></thead> <tbody><tr><td>page</td> <td>integer</td> <td>Page number to retrieve if pagination is enabled</td></tr> <tr><td>paginate</td> <td>string</td> <td>If set to &quot;false&quot; results will not be paginated</td></tr> <tr><td>after_height</td> <td>integer</td> <td>Scope to Events related to Blocks with a height greater than the given value</td></tr> <tr><td>after_timestamp</td> <td>integer</td> <td>Scope to Events related to Blocks with a timestamp after the given value</td></tr> <tr><td>types</td> <td>array</td> <td>Scope to Events with the given types. Possible values are <code>missed_bake</code>, <code>missed_endorsement</code>, <code>steal</code>, <code>double_bake</code>, <code>double_endorsement</code></td></tr></tbody></table> <p>Note: Pagination data in result is generated by the <code>pagy</code> ruby gem and can be used by the client app to create a Pagy object</p> <div class="language-ruby extra-class"><pre class="language-ruby"><code><span class="token variable">@events</span> <span class="token operator">=</span> <span class="token constant">Indexer</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">Event</span><span class="token punctuation">.</span>list<span class="token punctuation">(</span>cycle_id<span class="token punctuation">:</span> <span class="token variable">@cycle</span><span class="token punctuation">.</span>number<span class="token punctuation">,</span> page<span class="token punctuation">:</span> params<span class="token punctuation">[</span><span class="token symbol">:page</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token variable">@pagy</span> <span class="token operator">=</span> <span class="token constant">Pagy</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token variable">@events</span><span class="token punctuation">[</span><span class="token symbol">:pagination</span><span class="token punctuation">]</span><span class="token punctuation">.</span>symbolize_keys<span class="token punctuation">)</span>
+</code></pre></div><p><strong>Example Response</strong></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">{</span>
+  <span class="token string">&quot;events&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2615</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931965</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2616</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931965</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">29</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2614</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931963</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1MQJPGNMijnXnVoBENFz9rUhaPt3S7rWoz&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezmania&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">3</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2613</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931960</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">3</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2612</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931952</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">13</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2611</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931947</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1NEKxGEHsFufk87CVZcrqWu8o22qh46GK6&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Money Every 3 Days&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">19</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2610</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931945</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2609</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931940</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1NEKxGEHsFufk87CVZcrqWu8o22qh46GK6&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Money Every 3 Days&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">25</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2608</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931938</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1hTFcQk2KJRPzZyHkCwbj7E1zY1xBkiHsk&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ownBLOCK&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">25</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2607</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931937</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">27</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2603</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931935</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz3RB4aoyjov4KEVRbuhvQ1CKJgBJMWhaeB8&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">13</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2604</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931935</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz3RB4aoyjov4KEVRbuhvQ1CKJgBJMWhaeB8&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">20</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2605</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931935</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz3RB4aoyjov4KEVRbuhvQ1CKJgBJMWhaeB8&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">26</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2606</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931935</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz3VEZ4k6a4Wx42iyev6i2aVAptTRLEAivNN&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">30</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2145</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::Steal&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931931</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1irJKkXS2DBWkU1NnmFQx1c1L7pbGg4yhk&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Coinbase&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2146</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedBake&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931931</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2601</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931930</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">13</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2602</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931930</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">30</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2600</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931928</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1MQJPGNMijnXnVoBENFz9rUhaPt3S7rWoz&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezmania&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">14</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token string">&quot;id&quot;</span><span class="token operator">:</span> <span class="token number">2599</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Tezos::Event::MissedEndorsement&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;block_id&quot;</span><span class="token operator">:</span> <span class="token number">931925</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;related_block_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;tz1VQnqCCqX4K5sP3FNkVSNKTdCAMJDd3E1n&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;sender_name&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_id&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;receiver_name&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;reward&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;priority&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;slot&quot;</span><span class="token operator">:</span> <span class="token number">29</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;pagination&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;vars&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token string">&quot;page&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;items&quot;</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;outset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;size&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token number">4</span><span class="token punctuation">,</span>
+        <span class="token number">4</span><span class="token punctuation">,</span>
+        <span class="token number">1</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;page_param&quot;</span><span class="token operator">:</span> <span class="token string">&quot;page&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;params&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;anchor&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;link_extra&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;i18n_key&quot;</span><span class="token operator">:</span> <span class="token string">&quot;pagy.item_name&quot;</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;cycle&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token string">&quot;count&quot;</span><span class="token operator">:</span> <span class="token number">2616</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;count&quot;</span><span class="token operator">:</span> <span class="token number">2616</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;items&quot;</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;outset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;page&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;last&quot;</span><span class="token operator">:</span> <span class="token number">131</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;pages&quot;</span><span class="token operator">:</span> <span class="token number">131</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;from&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;to&quot;</span><span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;prev&quot;</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;next&quot;</span><span class="token operator">:</span> <span class="token number">2</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/bakerhub-indexer/assets/js/app.b7a7a60d.js" defer></script><script src="/bakerhub-indexer/assets/js/2.6c191659.js" defer></script><script src="/bakerhub-indexer/assets/js/6.0d3e66b1.js" defer></script><script src="/bakerhub-indexer/assets/js/3.63ecda92.js" defer></script>
+  </body>
+</html>
