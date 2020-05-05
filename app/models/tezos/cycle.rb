@@ -107,7 +107,7 @@ class Tezos::Cycle < ApplicationRecord
 
   def baking_stats
     data = { "missed_priorities" => missed_bakes_count }
-    blocks.includes(:missed_bakes).find_each do |block|
+    blocks.includes(:missed_bake_events).find_each do |block|
       data[block.baker_id] ||= Tezos::BakingStats.new
       data[block.baker_id].blocks_baked += 1
 
