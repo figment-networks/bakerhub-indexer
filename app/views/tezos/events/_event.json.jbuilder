@@ -1,5 +1,4 @@
 json.extract! event, :id,
-                     :type,
                      :block_id,
                      :related_block_id,
                      :sender_id,
@@ -9,3 +8,4 @@ json.extract! event, :id,
                      :reward,
                      :priority,
                      :slot
+json.type event.type.demodulize.underscore
