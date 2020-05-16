@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_05_115521) do
+ActiveRecord::Schema.define(version: 2020_05_14_161102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,20 @@ ActiveRecord::Schema.define(version: 2020_05_05_115521) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "url"
     t.index ["chain_id"], name: "index_tezos_bakers_on_chain_id"
+  end
+
+  create_table "tezos_ballots", id: :string, force: :cascade do |t|
+    t.bigint "chain_id"
+    t.integer "voting_period"
+    t.string "proposal_id"
+    t.string "baker_id"
+    t.string "vote"
+    t.datetime "created_at", precision: 6
+    t.string "block_id"
+    t.index ["baker_id"], name: "index_tezos_ballots_on_baker_id"
+    t.index ["chain_id"], name: "index_tezos_ballots_on_chain_id"
+    t.index ["proposal_id"], name: "index_tezos_ballots_on_proposal_id"
+    t.index ["voting_period"], name: "index_tezos_ballots_on_voting_period"
   end
 
   create_table "tezos_blocks", force: :cascade do |t|
@@ -88,7 +102,38 @@ ActiveRecord::Schema.define(version: 2020_05_05_115521) do
     t.index ["sender_id"], name: "index_tezos_events_on_sender_id"
   end
 
+  create_table "tezos_proposals", id: :string, force: :cascade do |t|
+    t.bigint "chain_id", null: false
+    t.string "name"
+    t.text "description"
+    t.string "discussion_url"
+    t.datetime "submitted_time", precision: 6, null: false
+    t.bigint "submitted_block"
+    t.integer "start_period"
+    t.boolean "passed_prop_period", default: false
+    t.boolean "passed_eval_period", default: false
+    t.boolean "is_promoted", default: false
+    t.index ["chain_id"], name: "index_tezos_proposals_on_chain_id"
+  end
+
+  create_table "tezos_voting_periods", force: :cascade do |t|
+    t.bigint "chain_id", null: false
+    t.string "period_type"
+    t.datetime "period_start_time", precision: 6
+    t.datetime "period_end_time", precision: 6
+    t.string "period_start_block"
+    t.string "period_end_block"
+    t.boolean "all_blocks_synced", default: false
+    t.integer "quorum"
+    t.jsonb "voting_power"
+    t.index ["chain_id"], name: "index_tezos_voting_proposals_on_chain_id"
+  end
+
   add_foreign_key "tezos_bakers", "tezos_chains", column: "chain_id", on_delete: :cascade
+  add_foreign_key "tezos_ballots", "tezos_bakers", column: "baker_id", on_delete: :cascade
+  add_foreign_key "tezos_ballots", "tezos_chains", column: "chain_id", on_delete: :cascade
+  add_foreign_key "tezos_ballots", "tezos_proposals", column: "proposal_id", on_delete: :cascade
+  add_foreign_key "tezos_ballots", "tezos_voting_periods", column: "voting_period", on_delete: :cascade
   add_foreign_key "tezos_blocks", "tezos_bakers", column: "baker_id", on_delete: :nullify
   add_foreign_key "tezos_blocks", "tezos_bakers", column: "intended_baker_id", on_delete: :nullify
   add_foreign_key "tezos_blocks", "tezos_cycles", column: "cycle_id", on_delete: :cascade
@@ -98,6 +143,8 @@ ActiveRecord::Schema.define(version: 2020_05_05_115521) do
   add_foreign_key "tezos_events", "tezos_bakers", column: "sender_id"
   add_foreign_key "tezos_events", "tezos_blocks", column: "block_id"
   add_foreign_key "tezos_events", "tezos_blocks", column: "related_block_id"
+  add_foreign_key "tezos_proposals", "tezos_chains", column: "chain_id", on_delete: :cascade
+  add_foreign_key "tezos_voting_periods", "tezos_chains", column: "chain_id", on_delete: :cascade
 
   create_view "tezos_endorsed_blocks", sql_definition: <<-SQL
       SELECT tezos_blocks.id,
