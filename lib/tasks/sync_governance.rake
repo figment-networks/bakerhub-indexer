@@ -5,6 +5,10 @@ task sync_governance: :environment do
   TaskLock.with_lock!(:sync) do
     puts "Setting Tezos Chain"
     chain = Tezos::Chain.first
+    unless chain
+      puts "No chain synced, run sync.rake before sync_governance.rake"
+      next
+    end
 
     # SYNC PROPOSALS
     data = Tezos::Rpc.new(chain).get("blocks/head/metadata")

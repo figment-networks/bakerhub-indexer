@@ -33,7 +33,7 @@ class AddGovernance < ActiveRecord::Migration[6.0]
       t.string "proposal_id"
       t.string "baker_id"
       t.string "vote"
-      t.initeger "rolls"
+      t.integer "rolls"
       t.datetime "created_at", precision: 6
       t.string "block_id"
       t.index ["chain_id"], name: "index_tezos_ballots_on_chain_id"

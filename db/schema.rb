@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_161102) do
     t.string "proposal_id"
     t.string "baker_id"
     t.string "vote"
+    t.integer "rolls"
     t.datetime "created_at", precision: 6
     t.string "block_id"
     t.index ["baker_id"], name: "index_tezos_ballots_on_baker_id"
