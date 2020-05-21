@@ -26,17 +26,17 @@ ActiveRecord::Schema.define(version: 2020_05_14_161102) do
 
   create_table "tezos_ballots", id: :string, force: :cascade do |t|
     t.bigint "chain_id"
-    t.integer "voting_period"
+    t.integer "voting_period_id"
     t.string "proposal_id"
     t.string "baker_id"
     t.string "vote"
     t.integer "rolls"
     t.datetime "created_at", precision: 6
-    t.string "block_id"
+    t.bigint "submitted_block"
     t.index ["baker_id"], name: "index_tezos_ballots_on_baker_id"
     t.index ["chain_id"], name: "index_tezos_ballots_on_chain_id"
     t.index ["proposal_id"], name: "index_tezos_ballots_on_proposal_id"
-    t.index ["voting_period"], name: "index_tezos_ballots_on_voting_period"
+    t.index ["voting_period_id"], name: "index_tezos_ballots_on_voting_period"
   end
 
   create_table "tezos_blocks", force: :cascade do |t|
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_161102) do
     t.boolean "all_blocks_synced", default: false
     t.integer "quorum"
     t.jsonb "voting_power"
+    t.integer "blocks_to_sync", default: [], array: true
     t.index ["chain_id"], name: "index_tezos_voting_proposals_on_chain_id"
   end
 
@@ -134,7 +135,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_161102) do
   add_foreign_key "tezos_ballots", "tezos_bakers", column: "baker_id", on_delete: :cascade
   add_foreign_key "tezos_ballots", "tezos_chains", column: "chain_id", on_delete: :cascade
   add_foreign_key "tezos_ballots", "tezos_proposals", column: "proposal_id", on_delete: :cascade
-  add_foreign_key "tezos_ballots", "tezos_voting_periods", column: "voting_period", on_delete: :cascade
+  add_foreign_key "tezos_ballots", "tezos_voting_periods", column: "voting_period_id", on_delete: :cascade
   add_foreign_key "tezos_blocks", "tezos_bakers", column: "baker_id", on_delete: :nullify
   add_foreign_key "tezos_blocks", "tezos_bakers", column: "intended_baker_id", on_delete: :nullify
   add_foreign_key "tezos_blocks", "tezos_cycles", column: "cycle_id", on_delete: :cascade

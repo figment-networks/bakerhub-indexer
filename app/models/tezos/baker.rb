@@ -3,6 +3,7 @@ class Tezos::Baker < ApplicationRecord
   has_many :blocks
   has_many :baking_rights, class_name: "Tezos::Block", inverse_of: :intended_baker
   has_many :missed_bakes
+  has_many :ballots
 
   alias_attribute :address, :id
 
