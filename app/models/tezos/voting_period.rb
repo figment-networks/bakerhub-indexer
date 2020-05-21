@@ -9,7 +9,8 @@ class Tezos::VotingPeriod < ApplicationRecord
 
   def supermajority_reached?
     yay_rolls = self.ballots.where(vote: "yay").sum { |b| b.rolls }
-    return (yay_rolls.to_f / self.total_rolls.to_f) >= 0.80
+    total_rolls_voted = yay_rolls + self.ballots.where(vote: "nay").sum { |b| b.rolls }
+    return (yay_rolls.to_f / total_rolls_voted.to_f) >= 0.80
   end
 
 end

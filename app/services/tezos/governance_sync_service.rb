@@ -91,6 +91,7 @@ module Tezos
 
           request.on_complete do |response|
             if response.success?
+              puts "Processing block #{height}"
               block_info = JSON.parse(response.body)
               process_voting_for_block(block_info)
               blocks = @voting_period.blocks_to_sync
@@ -138,12 +139,14 @@ module Tezos
         # each prop ID is element in an array
         # During testing vote and promotion vote, only one vote per baker
         # only one prop ID provided as a string
-        proposal_list = contents["proposals"]
-        proposal_array = proposal_list.instance_of?(Array) ? proposal_list : [proposal_list]
+        proposal_list = []
+        if kind == "ballot"
+          proposal_list << contents["proposal"]
+        else
+          proposal_list = contents["proposals"]
+        end
 
-        puts proposal_array.inspect
-        proposal_array.each do |a|
-          puts a.inspect
+        proposal_list.each do |a|
           proposal = Tezos::Proposal.find_or_create_by(id: a) do |p|
             p.chain = @chain
             p.submitted_time = submitted_time
