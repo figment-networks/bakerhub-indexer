@@ -124,10 +124,13 @@ ActiveRecord::Schema.define(version: 2020_05_14_161102) do
     t.datetime "period_end_time", precision: 6
     t.string "period_start_block"
     t.string "period_end_block"
-    t.boolean "all_blocks_synced", default: false
     t.integer "quorum"
     t.jsonb "voting_power"
+    t.integer "total_rolls"
+    t.integer "total_voters"
     t.integer "blocks_to_sync", default: [], array: true
+    t.boolean "all_blocks_synced", default: false
+    t.boolean "voting_processed", default: false
     t.index ["chain_id"], name: "index_tezos_voting_proposals_on_chain_id"
   end
 

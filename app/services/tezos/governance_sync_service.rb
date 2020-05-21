@@ -19,10 +19,10 @@ module Tezos
       get_voting_period_info
 
       # TESTING - SKIP 1st 10 periods b/c no proposals present
-      if @voting_period.id > 9
-        get_proposal_and_ballot_info
-      end
+      #if @voting_period.id > 9
+      get_proposal_and_ballot_info
       perform_end_of_period_calculations
+      #end
     end
 
     def get_voting_period_info
@@ -50,6 +50,8 @@ module Tezos
             puts "Error retrieving voting info"
           else
             voting = JSON.parse(response.body)
+            total_voters = voting.count
+            total_rolls = voting.sum { |v| v["rolls"] }
             @voting_period.update_columns(voting_power: voting)
           end
         end
@@ -68,6 +70,8 @@ module Tezos
                     period_end_block: @ending_block,
                     period_end_time: ending_time,
                     quorum: quorum,
+                    total_rolls: total_rolls,
+                    total_voters: total_voters,
                     all_blocks_synced: skip_block_sync
                   )
       end
@@ -79,10 +83,8 @@ module Tezos
         return
       end
 
-      if @voting_period.blocks_to_sync == []
-        ##TESTING
-        skip = @starting_block + 10000
-        all_blocks = (skip..@ending_block).to_a
+      if (@voting_period.blocks_to_sync == []) && (!@voting_period.all_blocks_synced)
+        all_blocks = (@starting_block..@ending_block).to_a
         @voting_period.update_columns(blocks_to_sync: all_blocks)
       end
 
@@ -94,8 +96,7 @@ module Tezos
           request.on_complete do |response|
             if response.success?
               block_info = JSON.parse(response.body)
-              puts "Processing height #{height}"
-              @voting_period.period_type == "proposal" ? process_proposal_period_voting(block_info) : process_voting_period_voting(block_info)
+              process_voting_for_block(block_info)
               blocks = @voting_period.blocks_to_sync
               blocks.delete(height)
               @voting_period.update_columns(blocks_to_sync: blocks)
@@ -107,32 +108,47 @@ module Tezos
         end
         hydra.run
       end
-      puts "There were #{@proposals} proposals and #{@ballots} for this voting period."
+      puts "There were #{@proposals} proposals and #{@ballots} ballots synced for this voting period."
+
+      # If there are still unsynced blocks, run again
+      if @voting_period.blocks_to_sync == []
+        @voting_period.update_columns(all_blocks_synced: true)
+      else
+        puts "#{@voting_period.blocks_to_sync.count} blocks missed, trying again."
+        get_proposal_and_ballot_info
+      end
     end
 
-    def process_proposal_period_voting(block_info)
+    def process_voting_for_block(block_info)
       operations = block_info["operations"]
       operations.each do |o|
         next if o.empty?
 
         operation = o[0]
         contents = operation["contents"][0]
-        next if contents["kind"] != "proposals"
+        kind = contents["kind"]
+        next if ((kind != "proposals") && (kind != "ballot"))
 
         hash_id = operation["hash"]
         block_level = block_info["header"]["level"]
         baker_id = contents["source"]
-        proposal_id = contents["proposals"][0]
+        vote = contents["ballot"]
         rolls = @voting_period.voting_power.select { |vote| vote["pkh"] == baker_id }
         rolls = rolls[0]["rolls"].to_i
         submitted_time = block_info["header"]["timestamp"]
         baker = Tezos::Baker.where(id: baker_id).first
 
+        if kind == "proposals"
+          proposal_id = contents["proposals"][0]
+        else
+          proposal_id = contents["proposal"]
+        end
+
         proposal = Tezos::Proposal.find_or_create_by(id: proposal_id) do |p|
           p.chain = @chain
           p.submitted_time = submitted_time
           p.submitted_block = block_level
-          p.start_period = @voting_period
+          p.start_period = @voting_period.id
           puts "Created proposal #{proposal_id}"
           @proposals += 1
         end
@@ -142,22 +158,43 @@ module Tezos
           b.voting_period = @voting_period
           b.proposal = proposal
           b.baker = baker
+          b.vote = vote
           b.rolls = rolls
           b.submitted_block = block_level
           b.created_at = submitted_time
           puts "Created ballot for proposal #{proposal_id} for #{rolls} rolls"
           @ballots += 1
         end
-        puts ballot.inspect
       end
-    end
-
-    def process_voting_period_voting(block_info)
-
     end
 
     def perform_end_of_period_calculations
       puts "Calculating end of voting period results"
+      if @voting_period.period_type == "testing_vote"
+        proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
+        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
+        proposal.update_columns(passed_eval_period: proposal_promoted)
+      elsif @voting_period.period_type == "promotion_vote"
+        proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
+        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
+        proposal.update_columns(is_promoted: proposal_promoted)
+      elsif @voting_period.period_type == "proposal"
+        max_votes = [0,""]
+        props = Tezos::Proposal.where(start_period: @voting_period.id)
+        props.each do  |p|
+          votes = p.ballots.where(voting_period_id: @voting_period.id).sum { |b| b.rolls }
+          if votes > max_votes[0]
+            max_votes = [votes, p.id]
+          elsif votes == max_votes[0]
+            max_votes << p.id
+          end
+        end
+        if max_votes.length == 2
+          proposal = Tezos::Proposal.find_by(id: max_votes[1])
+          proposal.update_columns(passed_prop_period: true)
+        end
+      end
+      @voting_period.update_columns(voting_processed: true)
     end
 
 
