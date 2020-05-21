@@ -17,12 +17,8 @@ module Tezos
 
     def run
       get_voting_period_info
-
-      # TESTING - SKIP 1st 10 periods b/c no proposals present
-      #if @voting_period.id > 9
       get_proposal_and_ballot_info
       perform_end_of_period_calculations
-      #end
     end
 
     def get_voting_period_info
@@ -128,7 +124,7 @@ module Tezos
         contents = operation["contents"][0]
         kind = contents["kind"]
         next if ((kind != "proposals") && (kind != "ballot"))
-
+        puts operation.inspect
         hash_id = operation["hash"]
         block_level = block_info["header"]["level"]
         baker_id = contents["source"]
@@ -138,32 +134,37 @@ module Tezos
         submitted_time = block_info["header"]["timestamp"]
         baker = Tezos::Baker.where(id: baker_id).first
 
-        if kind == "proposals"
-          proposal_id = contents["proposals"][0]
-        else
-          proposal_id = contents["proposal"]
-        end
+        # During prop period, each baker can vote for up to 20 props
+        # each prop ID is element in an array
+        # During testing vote and promotion vote, only one vote per baker
+        # only one prop ID provided as a string
+        proposal_list = contents["proposals"]
+        proposal_array = proposal_list.instance_of?(Array) ? proposal_list : [proposal_list]
 
-        proposal = Tezos::Proposal.find_or_create_by(id: proposal_id) do |p|
-          p.chain = @chain
-          p.submitted_time = submitted_time
-          p.submitted_block = block_level
-          p.start_period = @voting_period.id
-          puts "Created proposal #{proposal_id}"
-          @proposals += 1
-        end
+        puts proposal_array.inspect
+        proposal_array.each do |a|
+          puts a.inspect
+          proposal = Tezos::Proposal.find_or_create_by(id: a) do |p|
+            p.chain = @chain
+            p.submitted_time = submitted_time
+            p.submitted_block = block_level
+            p.start_period = @voting_period.id
+            puts "Created proposal #{a}"
+            @proposals += 1
+          end
 
-        ballot = Tezos::Ballot.find_or_create_by(id: hash_id) do |b|
-          b.chain = @chain
-          b.voting_period = @voting_period
-          b.proposal = proposal
-          b.baker = baker
-          b.vote = vote
-          b.rolls = rolls
-          b.submitted_block = block_level
-          b.created_at = submitted_time
-          puts "Created ballot for proposal #{proposal_id} for #{rolls} rolls"
-          @ballots += 1
+          ballot = Tezos::Ballot.find_or_create_by(id: hash_id) do |b|
+            b.chain = @chain
+            b.voting_period = @voting_period
+            b.proposal = proposal
+            b.baker = baker
+            b.vote = vote
+            b.rolls = rolls
+            b.submitted_block = block_level
+            b.created_at = submitted_time
+            puts "Created ballot for proposal #{a} for #{rolls} rolls"
+            @ballots += 1
+          end
         end
       end
     end
@@ -189,6 +190,8 @@ module Tezos
             max_votes << p.id
           end
         end
+
+        # If there is a tie, no prop is promoted
         if max_votes.length == 2
           proposal = Tezos::Proposal.find_by(id: max_votes[1])
           proposal.update_columns(passed_prop_period: true)
