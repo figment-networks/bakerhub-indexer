@@ -18,7 +18,9 @@ module Tezos
     def run
       get_voting_period_info
       get_proposal_and_ballot_info
-      perform_end_of_period_calculations
+      if @voting_period.all_blocks_synced
+        perform_end_of_period_calculations
+      end
     end
 
     def get_voting_period_info
@@ -86,12 +88,14 @@ module Tezos
 
       time "Getting proposal and voting info for period #{@period_number}" do
         @voting_period.blocks_to_sync.each do |height|
+
+          if height > @latest_block then break end
+
           url = Tezos::Rpc.new(@chain).url("blocks/#{height}")
           request = Typhoeus::Request.new(url, method: :get)
 
           request.on_complete do |response|
             if response.success?
-              puts "Processing block #{height}"
               block_info = JSON.parse(response.body)
               process_voting_for_block(block_info)
               blocks = @voting_period.blocks_to_sync
@@ -110,7 +114,7 @@ module Tezos
       # If there are still unsynced blocks, run again
       if @voting_period.blocks_to_sync == []
         @voting_period.update_columns(all_blocks_synced: true)
-      else
+      elsif @ending_block <= @latest_block
         puts "#{@voting_period.blocks_to_sync.count} blocks missed, trying again."
         get_proposal_and_ballot_info
       end
@@ -125,7 +129,7 @@ module Tezos
         contents = operation["contents"][0]
         kind = contents["kind"]
         next if ((kind != "proposals") && (kind != "ballot"))
-        puts operation.inspect
+
         hash_id = operation["hash"]
         block_level = block_info["header"]["level"]
         baker_id = contents["source"]
