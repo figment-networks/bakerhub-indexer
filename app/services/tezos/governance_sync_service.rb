@@ -6,7 +6,6 @@ module Tezos
       @chain = chain
       @period_number = voting_period
       @voting_period = Tezos::VotingPeriod.find_or_create_by(id: voting_period, chain: chain)
-
       @latest_block = latest_block
       @starting_block = (voting_period * 32768) + 1
       @ending_block = (voting_period + 1) * 32768
@@ -123,11 +122,14 @@ module Tezos
     def process_voting_for_block(block_info)
       operations = block_info["operations"]
       operations.each do |o|
+        # Block has no operations
         next if o.empty?
 
         operation = o[0]
         contents = operation["contents"][0]
         kind = contents["kind"]
+
+        # Operation is something other than a proposal or ballot
         next if ((kind != "proposals") && (kind != "ballot"))
 
         hash_id = operation["hash"]
@@ -137,10 +139,10 @@ module Tezos
         rolls = @voting_period.voting_power.select { |vote| vote["pkh"] == baker_id }
         rolls = rolls[0]["rolls"].to_i
         submitted_time = block_info["header"]["timestamp"]
-        baker = Tezos::Baker.where(id: baker_id).first
+        baker = Tezos::Baker.find_by(id: baker_id)
 
         # During prop period, each baker can vote for up to 20 props
-        # each prop ID is element in an array
+        # each prop ID is an element in an array
         # During testing vote and promotion vote, only one vote per baker
         # only one prop ID provided as a string
         proposal_list = []
