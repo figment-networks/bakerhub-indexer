@@ -39,6 +39,7 @@ module Tezos
       start_height = cycle.start_height
       end_height = [cycle.end_height, latest_block].min
       all_heights = (start_height..end_height).to_a
+      cycle.blocks.reload
       found_heights = cycle.blocks.pluck(:id)
       missing_heights = all_heights - found_heights
 
