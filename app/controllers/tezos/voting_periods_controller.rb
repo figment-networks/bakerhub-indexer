@@ -4,7 +4,8 @@ class Tezos::VotingPeriodsController < ApplicationController
   # GET /tezos/proposals
   # GET /tezos/proposals.json
   def index
-    @tezos_voting_periods = Tezos::VotingPeriod.all
+    limit = params[:limit] || 10
+    @tezos_voting_periods = Tezos::VotingPeriod.order("id desc").limit(limit)
   end
 
   # GET /tezos/proposals/1
