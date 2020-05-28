@@ -15,10 +15,15 @@ module Tezos
 
         blocks.find_each do |block|
           block.missed_slots.each do |slot|
+            baker = Tezos::Baker.find_or_create_by(
+              id: block.endorsers[slot - 1],
+              chain: cycle.chain
+            )
+
             events << {
               type: "Tezos::Event::MissedEndorsement",
               block_id: block.id,
-              sender_id: block.endorsers[slot - 1],
+              sender_id: baker.id,
               slot: slot
             }
           end
