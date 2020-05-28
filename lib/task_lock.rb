@@ -6,7 +6,8 @@ class TaskLock
 
   LOCKFILE_BASE = Rails.root.join('tmp', 'pids')
   LOCKFILES = {
-    sync: 'task-lock--sync.lock'
+    sync: 'task-lock--sync.lock',
+    sync_governance: 'task-lock--sync_governance.lock'
   }
 
   class << self
