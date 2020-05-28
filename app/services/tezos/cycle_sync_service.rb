@@ -9,11 +9,11 @@ module Tezos
       @cycle_number = cycle_number
       @latest_block = latest_block
       @cycle = Tezos::Cycle.find_or_create_by(id: cycle_number, chain: chain)
-      @blocks = {}
-      @events = []
     end
 
     def run
+      @blocks = {}
+      @events = []
       get_cycle_constants
       get_block_info
       import_blocks
