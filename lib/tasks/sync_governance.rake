@@ -2,7 +2,7 @@ require "task_lock"
 
 task sync_governance: :environment do
   $stdout.sync = true
-  TaskLock.with_lock!(:sync) do
+  TaskLock.with_lock!(:sync_governance) do
     puts "Setting Tezos Chain"
     chain = Tezos::Chain.first
     unless chain
