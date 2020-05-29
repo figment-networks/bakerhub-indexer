@@ -49,7 +49,7 @@ module Tezos
             voting = JSON.parse(response.body)
             total_voters = voting.count
             total_rolls = voting.sum { |v| v["rolls"] }
-            @voting_period.update_columns(voting_power: voting)
+            @voting_period.update_columns(voting_power: voting, total_rolls: total_rolls, total_voters: total_voters)
           end
         end
 
@@ -67,8 +67,6 @@ module Tezos
                     period_end_block: @ending_block,
                     period_end_time: ending_time,
                     quorum: quorum,
-                    total_rolls: total_rolls,
-                    total_voters: total_voters,
                     all_blocks_synced: skip_block_sync
                   )
       end

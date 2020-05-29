@@ -1,1 +1,1 @@
-json.partial! "tezos/proposals/proposal", proposal: @tezos_proposal
+json.partial! "tezos/proposals/proposal_details", proposal: @tezos_proposal
