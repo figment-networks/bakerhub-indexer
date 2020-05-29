@@ -180,11 +180,11 @@ module Tezos
       puts "Calculating end of voting period results"
       if @voting_period.period_type == "testing_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
+        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached?
         proposal.update_columns(passed_eval_period: proposal_promoted)
       elsif @voting_period.period_type == "promotion_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
+        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached?
         proposal.update_columns(is_promoted: proposal_promoted)
       elsif @voting_period.period_type == "proposal"
         max_votes = [0,""]
