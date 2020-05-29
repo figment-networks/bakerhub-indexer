@@ -6,5 +6,8 @@ Rails.application.routes.draw do
     end
     resources :events, only: :index
     resources :bakers, only: [:index, :show]
+    resources :voting_periods, only: [:index, :show]
+    resources :proposals, only: [:index, :show]
+    resources :ballots, only: [:index, :show]
   end
 end
