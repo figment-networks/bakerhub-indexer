@@ -16,9 +16,11 @@ module Tezos
 
     def run
       get_voting_period_info
-      get_proposal_and_ballot_info
-      if @voting_period.all_blocks_synced
-        perform_end_of_period_calculations
+      if (@voting_period.id == 13) || (@voting_period.id == 22) || (@voting_period.id == 23) || (@voting_period.id == 24) || (@voting_period.id == 25) || (@voting_period.id == 29)
+        get_proposal_and_ballot_info
+        if @voting_period.all_blocks_synced
+          perform_end_of_period_calculations
+        end
       end
     end
 
@@ -110,7 +112,9 @@ module Tezos
 
       # If there are still unsynced blocks, run again
       if @voting_period.blocks_to_sync == []
+        puts "All blocks synced for period #{@voting_period.id}."
         @voting_period.update_columns(all_blocks_synced: true)
+        puts "All Blocks Synced: #{@voting_period.all_blocks_synced}"
       elsif @ending_block <= @latest_block
         puts "#{@voting_period.blocks_to_sync.count} blocks missed, trying again."
         get_proposal_and_ballot_info
@@ -180,11 +184,11 @@ module Tezos
       puts "Calculating end of voting period results"
       if @voting_period.period_type == "testing_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached?
+        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached
         proposal.update_columns(passed_eval_period: proposal_promoted)
       elsif @voting_period.period_type == "promotion_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached?
+        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached
         proposal.update_columns(is_promoted: proposal_promoted)
       elsif @voting_period.period_type == "proposal"
         max_votes = [0,""]
