@@ -16,11 +16,9 @@ module Tezos
 
     def run
       get_voting_period_info
-      if (@voting_period.id == 13) || (@voting_period.id == 22) || (@voting_period.id == 23) || (@voting_period.id == 24) || (@voting_period.id == 25) || (@voting_period.id == 29)
-        get_proposal_and_ballot_info
-        if @voting_period.all_blocks_synced
-          perform_end_of_period_calculations
-        end
+      get_proposal_and_ballot_info
+      if @voting_period.all_blocks_synced
+        perform_end_of_period_calculations
       end
     end
 
