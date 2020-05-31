@@ -4,7 +4,9 @@ class Tezos::VotingPeriod < ApplicationRecord
 
   def quorum_reached
     rolls_voted = self.ballots.sum { |b| b.rolls }
-    self.quorum.blank? ? false : (rolls_voted >= self.quorum)
+    percent_voted = (rolls_voted.to_f / self.total_rolls.to_f) * 10000
+    puts percent_voted
+    self.quorum.blank? ? false : (percent_voted >= self.quorum)
   end
 
   def supermajority_reached
