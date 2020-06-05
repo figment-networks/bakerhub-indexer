@@ -7,7 +7,7 @@ set :repo_url, 'git@github.com:figment-networks/bakerhub-indexer.git'
 # use current local branch. deploy/production.rb forces master
 set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
-set :deploy_to, '/home/bakerhub/indexer'
+set :deploy_to, '/home/bakerhub/app'
 
 before 'deploy:check:linked_files', 'linked_files:upload_files'
 append :linked_files, 'config/master.key'
@@ -22,7 +22,7 @@ set :keep_releases, 2
 
 task :restart_web do
   on roles(:web) do
-    execute 'sudo systemctl reload bakerhub-indexer-unicorn || sudo systemctl start bakerhub-indexer-unicorn'
+    execute 'sudo systemctl reload bakerhub-unicorn || sudo systemctl start bakerhub-unicorn'
   end
 end
 

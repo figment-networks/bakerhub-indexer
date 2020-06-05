@@ -6,6 +6,7 @@ default: &default
   host: <%= ENV.fetch('BAKERHUB_INDEXER_DATABASE_HOST') { Rails.application.credentials.dig(Rails.env.to_sym, :database, :host) || 'localhost' } %>
   user: <%= ENV.fetch('BAKERHUB_INDEXER_DATABASE_USER') { Rails.application.credentials.dig(Rails.env.to_sym, :database, :user) } %>
   password: <%= ENV.fetch('BAKERHUB_INDEXER_DATABASE_PASSWORD') { Rails.application.credentials.dig(Rails.env.to_sym, :database, :password) } %>
+  port: <%= ENV.fetch('BAKERHUB_INDEXER_DATABASE_PORT') { Rails.application.credentials.dig(Rails.env.to_sym, :database, :port) } %>
 
 development:
   <<: *default
