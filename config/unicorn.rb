@@ -1,6 +1,6 @@
 rails_env = ENV['RACK_ENV'] || ENV['RAILS_ENV'] or raise "Specify Rails environment!"
 
-app_root = "/home/bakerhub/indexer"
+app_root = "/home/bakerhub/app"
 working_directory "#{app_root}/current"
 
 pid "#{app_root}/shared/tmp/pids/unicorn.pid"

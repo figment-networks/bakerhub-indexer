@@ -2,12 +2,12 @@ run_task = "NO_PROGRESS=1 /usr/bin/nice -n 10 bin/rake :task --silent :output"
 abort_task = 'echo "Not running, release is old."'
 
 def log_path(name)
-  File.join('/home/bakerhub/indexer/shared/log', name+'.log')
+  File.join('/home/bakerhub/app/shared/log', name+'.log')
 end
 
 job_type :rake, [
   'cd :path', 'source ~/.env',
-  %{ [ $(pwd) = $(readlink "/home/bakerhub/indexer/current") ] && #{run_task} || #{abort_task} }
+  %{ [ $(pwd) = $(readlink "/home/bakerhub/app/current") ] && #{run_task} || #{abort_task} }
 ].join( ' && ' )
 
 
