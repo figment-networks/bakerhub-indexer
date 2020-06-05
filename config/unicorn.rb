@@ -21,7 +21,7 @@ preload_app true
 timeout 120
 
 # Listen on a Unix data socket
-listen 8770
+listen '/tmp/bakerhub-unicorn.sock', backlog: 4096
 
 before_exec do |server|
   ENV['BUNDLE_GEMFILE'] = "#{app_root}/current/Gemfile"
