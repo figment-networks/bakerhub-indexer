@@ -3,10 +3,10 @@ require "task_lock"
 task sync_governance: :environment do
   $stdout.sync = true
   TaskLock.with_lock!(:sync_governance) do
-    puts "Setting Tezos Chain"
+    Rails.logger.debug "Setting Tezos Chain"
     chains = Tezos::Chain.all
     if chains.empty?
-      puts "No chain synced, run sync.rake before sync_governance.rake"
+      Rails.logger.debug "No chain synced, run sync.rake before sync_governance.rake"
       next
     end
 
@@ -16,7 +16,7 @@ task sync_governance: :environment do
       current_period = data["level"]["voting_period"]
       latest_block  = data["level"]["level"]
 
-      puts "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
+      Rails.logger.debug "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
 
       incomplete_local_periods = chain.voting_periods.where.not(voting_processed: true).order(id: :asc).pluck(:id)
       missing_local_periods    = (0..current_period).to_a - chain.voting_periods.pluck(:id)
