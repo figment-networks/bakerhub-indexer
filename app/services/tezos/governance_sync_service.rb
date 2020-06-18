@@ -44,7 +44,7 @@ module Tezos
           # shouldn't happen after that
           # but no way to separate other causes of 404 response
           if response.response_code == 404
-            puts "Error retrieving voting info"
+            Rails.logger.debug "Error retrieving voting info"
           else
             voting = JSON.parse(response.body)
             total_voters = voting.count
@@ -74,7 +74,7 @@ module Tezos
 
     def get_proposal_and_ballot_info
       if @voting_period.period_type == "testing"
-        puts "Testing period -- no proposals or voting info"
+        Rails.logger.debug "Testing period -- no proposals or voting info"
         return
       end
 
@@ -99,22 +99,22 @@ module Tezos
               blocks.delete(height)
               @voting_period.update_columns(blocks_to_sync: blocks)
             else
-              puts "HTTP request failed for height #{height}: " + response.code.to_s
+              Rails.logger.debug "HTTP request failed for height #{height}: " + response.code.to_s
             end
           end
           hydra.queue(request)
         end
         hydra.run
       end
-      puts "There were #{@proposals} proposals and #{@ballots} ballots synced for this voting period."
+      Rails.logger.debug "There were #{@proposals} proposals and #{@ballots} ballots synced for this voting period."
 
       # If there are still unsynced blocks, run again
-      if @voting_period.blocks_to_sync == []
-        puts "All blocks synced for period #{@voting_period.id}."
+      if @voting_period.blocks_to_sync.empty?
+        Rails.logger.debug "All blocks synced for period #{@voting_period.id}."
         @voting_period.update_columns(all_blocks_synced: true)
-        puts "All Blocks Synced: #{@voting_period.all_blocks_synced}"
+        Rails.logger.debug "All Blocks Synced: #{@voting_period.all_blocks_synced}"
       elsif @ending_block <= @latest_block
-        puts "#{@voting_period.blocks_to_sync.count} blocks missed, trying again."
+        Rails.logger.debug "#{@voting_period.blocks_to_sync.count} blocks missed, trying again."
         get_proposal_and_ballot_info
       end
     end
@@ -158,7 +158,7 @@ module Tezos
             p.submitted_time = submitted_time
             p.submitted_block = block_level
             p.start_period = @voting_period.id
-            puts "Created proposal #{a}"
+            Rails.logger.debug "Created proposal #{a}"
             @proposals += 1
           end
 
@@ -171,7 +171,7 @@ module Tezos
             b.rolls = rolls
             b.submitted_block = block_level
             b.created_at = submitted_time
-            puts "Created ballot for proposal #{a} for #{rolls} rolls"
+            Rails.logger.debug "Created ballot for proposal #{a} for #{rolls} rolls"
             @ballots += 1
           end
         end
@@ -179,14 +179,14 @@ module Tezos
     end
 
     def perform_end_of_period_calculations
-      puts "Calculating end of voting period results"
+      Rails.logger.debug "Calculating end of voting period results"
       if @voting_period.period_type == "testing_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached
+        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
         proposal.update_columns(passed_eval_period: proposal_promoted)
       elsif @voting_period.period_type == "promotion_vote"
         proposal = Tezos::Proposal.find_by(id: @voting_period.ballots.first.proposal_id)
-        proposal_promoted = @voting_period.quorum_reached && @voting_period.supermajority_reached
+        proposal_promoted = @voting_period.quorum_reached? && @voting_period.supermajority_reached?
         proposal.update_columns(is_promoted: proposal_promoted)
       elsif @voting_period.period_type == "proposal"
         max_votes = [0,""]
