@@ -13,4 +13,5 @@ job_type :rake, [
 
 every 1.minute do
   rake 'sync', output: log_path('tezos')
+  rake 'sync_governance', output: log_path('tezos')
 end
