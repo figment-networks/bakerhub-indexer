@@ -201,7 +201,7 @@ module Tezos
         end
 
         # If there is a tie, no prop is promoted
-        if max_votes.length == 2
+        if (max_votes.length == 2) && (max_votes[1] != "")
           proposal = Tezos::Proposal.find_by(id: max_votes[1])
           proposal.update_columns(passed_prop_period: true)
         end
