@@ -35,7 +35,9 @@ module Tezos
         block_hash = block["hash"]
 
         # Testing period has no proposal submission or voting, can skip block sync
-        skip_block_sync = period_type == 'testing' ? true : false
+        # Otherwise, if period already exists, see if blocks were already processed
+        # in case process errored out before voting results were calculated
+        skip_block_sync = period_type == 'testing' ? true : @voting_period.all_blocks_synced
 
         if @voting_period.voting_power == nil
           url = Tezos::Rpc.new(@chain).url("blocks/#{block_hash}/votes/listings")
