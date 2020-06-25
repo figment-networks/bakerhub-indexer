@@ -36,18 +36,18 @@ class Tezos::Block < ApplicationRecord
   def endorsers
     return self[:endorsers] if self[:endorsers].present?
 
-    a = []
+    endorsers_from_rpc = []
     url = Tezos::Rpc.new(chain).url("blocks/#{height}/helpers/endorsing_rights")
     res = Typhoeus.get(url)
     data = JSON.parse(res.body)
     data.each do |right|
       right["slots"].each do |slot|
-        a[slot] = right["delegate"]
+        endorsers_from_rpc[slot] = right["delegate"]
       end
     end
 
-    update_columns(endorsers: a)
+    update(endorsers: endorsers_from_rpc)
 
-    return a
+    return endorsers_from_rpc
   end
 end
