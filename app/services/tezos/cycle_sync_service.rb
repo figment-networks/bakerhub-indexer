@@ -127,25 +127,11 @@ module Tezos
                     endorsed_slots: res&.bitmask,
                   }
 
-                  url = Tezos::Rpc.new(chain).url("blocks/#{height}/helpers/endorsing_rights")
-                  request2 = Typhoeus::Request.new(url, method: :get)
-
-                  request2.on_complete do |response|
-                    if response.success?
-                      endorsers = []
-                      data = JSON.parse(response.body)
-
-                      data.each do |right|
-                        right["slots"].each do |slot|
-                          endorsers[slot] = right["delegate"]
-                        end
-                      end
-
-                      blocks[height.to_s][:endorsers] = endorsers
-                    end
+                  sync = Tezos::EndorsersSyncService.new(chain, height)
+                  sync.on_success do |endorsers|
+                    blocks[height.to_s][:endorsers] = endorsers
                   end
-
-                  hydra.queue(request2)
+                  hydra.queue(sync.request)
                 rescue Exception => e
                   puts "ERROR PARSING BLOCK #{height}"
                   puts response.body

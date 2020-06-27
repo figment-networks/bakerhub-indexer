@@ -27,6 +27,7 @@ class Tezos::Block < ApplicationRecord
 
   def timestamp
     return self[:timestamp] if self[:timestamp].present?
+
     data = Tezos::Rpc.get("blocks/#{id}/header")
     time = Time.parse(data["timestamp"])
     update_columns(timestamp: time)
@@ -36,18 +37,11 @@ class Tezos::Block < ApplicationRecord
   def endorsers
     return self[:endorsers] if self[:endorsers].present?
 
-    endorsers_from_rpc = []
-    url = Tezos::Rpc.new(chain).url("blocks/#{height}/helpers/endorsing_rights")
-    res = Typhoeus.get(url)
-    data = JSON.parse(res.body)
-    data.each do |right|
-      right["slots"].each do |slot|
-        endorsers_from_rpc[slot] = right["delegate"]
-      end
+    sync = Tezos::EndorsersSyncService.new(chain, height)
+    sync.on_success do |endorsers|
+      update(endorsers: endorsers)
     end
-
-    update(endorsers: endorsers_from_rpc)
-
-    return endorsers_from_rpc
+    sync.request.run
+    return endorsers
   end
 end
