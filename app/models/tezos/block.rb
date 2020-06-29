@@ -27,9 +27,21 @@ class Tezos::Block < ApplicationRecord
 
   def timestamp
     return self[:timestamp] if self[:timestamp].present?
+
     data = Tezos::Rpc.get("blocks/#{id}/header")
     time = Time.parse(data["timestamp"])
     update_columns(timestamp: time)
     return time
+  end
+
+  def endorsers
+    return self[:endorsers] if self[:endorsers].present?
+
+    sync = Tezos::EndorsersSyncService.new(chain, height)
+    sync.on_success do |endorsers|
+      update(endorsers: endorsers)
+    end
+    sync.request.run
+    return endorsers
   end
 end
