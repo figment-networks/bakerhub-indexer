@@ -10,8 +10,7 @@ class Tezos::BakersController < ApplicationController
 
   # GET /tezos/bakers/count.json
   def count
-    @chain = Tezos::Chain.primary
-    @count = @chain.bakers_count
+    @count = Tezos::Chain.primary.bakers_count
   end
 
   # GET /tezos/bakers/1
