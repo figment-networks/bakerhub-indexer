@@ -1,5 +1,5 @@
 class Tezos::Baker < ApplicationRecord
-  belongs_to :chain
+  belongs_to :chain, counter_cache: true
   has_many :blocks
   has_many :baking_rights, class_name: "Tezos::Block", inverse_of: :intended_baker
   has_many :missed_bakes
