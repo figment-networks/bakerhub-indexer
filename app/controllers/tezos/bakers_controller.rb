@@ -8,6 +8,12 @@ class Tezos::BakersController < ApplicationController
     @tezos_bakers = @tezos_bakers.where("LOWER(id) = ? OR name ILIKE ?", params[:query].downcase, "%#{params[:query]}%") if params[:query]
   end
 
+  # GET /tezos/bakers/count.json
+  def count
+    @chain = Tezos::Chain.primary
+    @count = @chain.bakers_count
+  end
+
   # GET /tezos/bakers/1
   # GET /tezos/bakers/1.json
   def show
