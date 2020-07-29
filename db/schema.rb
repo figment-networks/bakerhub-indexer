@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_25_164659) do
+ActiveRecord::Schema.define(version: 2020_07_29_121206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 2020_07_25_164659) do
     t.string "rpc_port", default: "8732"
     t.string "rpc_path"
     t.boolean "use_ssl_for_rpc", default: true
-    t.integer "bakers_count"
+    t.integer "bakers_count", default: 0
   end
 
   create_table "tezos_cycles", force: :cascade do |t|
