@@ -50,13 +50,6 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
   end
 
   def endorsers
-    return self[:endorsers] if self[:endorsers].present?
-
-    sync = Tezos::EndorsersSyncService.new(chain, height)
-    sync.on_success do |endorsers|
-      block.update(endorsers: endorsers)
-    end
-    sync.request.run
-    return endorsers
+    @endorsers ||= block.endorsers
   end
 end
