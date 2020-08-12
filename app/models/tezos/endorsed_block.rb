@@ -33,6 +33,10 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
     all
   end
 
+  def block
+    @block ||= Tezos::Block.find(id)
+  end
+
   def endorsement_results
     @endorsement_results ||= Tezos::EndorsementResults.new(height: id, bitmask: self[:endorsed_slots], endorsers: endorsers) if self[:endorsed_slots].present?
   end
@@ -50,7 +54,7 @@ class Tezos::EndorsedBlock < ActiveRecord::Base
 
     sync = Tezos::EndorsersSyncService.new(chain, height)
     sync.on_success do |endorsers|
-      update(endorsers: endorsers)
+      block.update(endorsers: endorsers)
     end
     sync.request.run
     return endorsers
