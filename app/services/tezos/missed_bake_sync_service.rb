@@ -15,7 +15,7 @@ module Tezos
         if cycle.baking_rights.nil? || cycle.baking_rights_max_priority < max_priority
           rights = Tezos::Rpc.get(
             "/blocks/#{cycle.start_height}/helpers/baking_rights",
-            "cycle=#{cycle.number}&max_priority=#{max_priority}"
+            "cycle=#{cycle.number}&max_priority=#{max_priority}" # Note: add &all to get all the baking opportunities for each baker at each level are returned, instead of just the first one. RPC started having trouble parsing this param, so I removed it. 
           )
           cycle.update(baking_rights: rights, baking_rights_max_priority: max_priority)
         else
@@ -44,7 +44,7 @@ module Tezos
               }
             end
           end
-          intended_bakers[block.id.to_s] = block_rights.find { |r| r["priority"] == 0 }["delegate"]
+          intended_bakers[block.id.to_s] = block_rights.find { |r| r["priority"] == 0 }["delegate"] if block_rights.find { |r| r["priority"] == 0 }
         end
 
         intended_bakers.each do |height, baker_id|
