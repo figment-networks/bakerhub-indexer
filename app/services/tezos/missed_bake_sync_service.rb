@@ -15,7 +15,7 @@ module Tezos
         if cycle.baking_rights.nil? || cycle.baking_rights_max_priority < max_priority
           rights = Tezos::Rpc.get(
             "/blocks/#{cycle.start_height}/helpers/baking_rights",
-            "cycle=#{cycle.number}&max_priority=#{max_priority}&all"
+            "cycle=#{cycle.number}&max_priority=#{max_priority}"
           )
           cycle.update(baking_rights: rights, baking_rights_max_priority: max_priority)
         else
