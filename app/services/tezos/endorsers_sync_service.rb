@@ -28,6 +28,10 @@ module Tezos
       @request ||= Typhoeus::Request.new(url, method: :get)
     end
 
+    def run
+      request.run
+    end
+
     private
 
     def url
