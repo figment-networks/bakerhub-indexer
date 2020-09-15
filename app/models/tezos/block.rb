@@ -41,7 +41,7 @@ class Tezos::Block < ApplicationRecord
     sync.on_success do |endorsers|
       update(endorsers: endorsers)
     end
-    sync.request.run
+    sync.run
     return endorsers
   end
 end
