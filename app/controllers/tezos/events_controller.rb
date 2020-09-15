@@ -22,7 +22,7 @@ class Tezos::EventsController < ApplicationController
     end
 
     if params[:after_height].present?
-      events = events.where("tezos_blocks.id > ?", params[:after_height].to_i)
+      events = events.where("block_id > ?", params[:after_height].to_i)
     end
 
     if params[:paginate] == 'false'
