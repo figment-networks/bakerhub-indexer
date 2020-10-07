@@ -21,6 +21,10 @@ class Tezos::EventsController < ApplicationController
       events = events.where("tezos_blocks.timestamp > ?", Time.at(params[:after_timestamp].to_i))
     end
 
+    if params[:before_timestamp].present?
+      events = events.where("tezos_blocks.timestamp < ?", Time.at(params[:before_timestamp].to_i))
+    end
+
     if params[:after_height].present?
       events = events.where("block_id > ?", params[:after_height].to_i)
     end
