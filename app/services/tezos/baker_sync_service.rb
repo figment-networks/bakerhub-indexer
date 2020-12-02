@@ -23,10 +23,13 @@ module Tezos
         found_bakers = Tezos::Baker.pluck(:id)
         missing_bakers = all_bakers - found_bakers
 
-        # Need to backfill active flag, and set for missing bakers when added
         missing_bakers.each do |id|
-          Tezos::Baker.create(id: id, chain: chain)
+          Tezos::Baker.create(id: id, chain: chain, active: active_bakers.include?(id))
         end
+
+        # Backfill actie flag for bakers that were added without it set
+        Tezos::Baker.where(active: nil, id: active_bakers).update_all(active: true)
+        Tezos::Baker.where(active: nil, id: inactive_bakers).update_all(active: false)
 
         # Need to set block for these events
         Tezos::Baker.where(active: false, id: active_bakers).each do |baker|
