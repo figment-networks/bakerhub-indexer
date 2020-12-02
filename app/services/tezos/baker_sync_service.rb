@@ -13,10 +13,28 @@ module Tezos
         url = Tezos::Rpc.new(chain).url("blocks/head/context/raw/json/delegates")
         res = Typhoeus.get(url)
         all_bakers = JSON.parse(res.body)
+
+        url = Tezos::Rpc.new(chain).url("blocks/head/context/delegates", "active=true")
+        res = Typhoeus.get(url)
+        active_bakers = JSON.parse(res.body)
+
+        inactive_bakers = all_bakers - active_bakers
+
         found_bakers = Tezos::Baker.pluck(:id)
         missing_bakers = all_bakers - found_bakers
+
+        # Need to backfill active flag, and set for missing bakers when added
         missing_bakers.each do |id|
           Tezos::Baker.create(id: id, chain: chain)
+        end
+
+        # Need to set block for these events
+        Tezos::Baker.where(active: false, id: active_bakers).each do |baker|
+          puts "baker activated #{baker.id}"
+        end
+
+        Tezos::Baker.where(active: true, id: inactive_bakers).each do |baker|
+          puts "baker deactivated #{baker.id}"
         end
       end
 
