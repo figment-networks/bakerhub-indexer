@@ -27,11 +27,17 @@ module Tezos
 
         # Need to do this after blocks have been imported since events belong to blocks...
         Tezos::Baker.where(active: false, id: active_bakers).each do |baker|
-          puts "baker activated #{baker.id} at block #{latest_block}"
+          Tezos::Event::BakerActivated.create(
+            block_id: latest_block,
+            sender_id: baker.id
+          )
         end
 
         Tezos::Baker.where(active: true, id: inactive_bakers).each do |baker|
-          puts "baker deactivated #{baker.id} at block #{latest_block}"
+          Tezos::Event::BakerDeactivated.create(
+            block_id: latest_block,
+            sender_id: baker.id
+          )
         end
       end
     end
