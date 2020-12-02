@@ -31,6 +31,7 @@ module Tezos
             block_id: latest_block,
             sender_id: baker.id
           )
+          baker.update(active: true)
         end
 
         Tezos::Baker.where(active: true, id: inactive_bakers).each do |baker|
@@ -38,6 +39,7 @@ module Tezos
             block_id: latest_block,
             sender_id: baker.id
           )
+          baker.update(active: false)
         end
       end
     end
