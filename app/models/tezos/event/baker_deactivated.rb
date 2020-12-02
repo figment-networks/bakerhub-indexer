@@ -1,5 +1,5 @@
 module Tezos
-  module Event
+  class Event
     class BakerDeactivated < Tezos::Event
       alias_attribute :baker, :sender
     end
