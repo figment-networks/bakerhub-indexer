@@ -26,7 +26,7 @@ task sync: :environment do
     latest_block  = data["level"]["level"]
 
     puts "#{chain.name} is currently on Cycle #{current_cycle} at Block #{latest_block}"
-    
+
     incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
     missing_local_cycles    = (0..current_cycle).to_a - Tezos::Cycle.pluck(:id)
 
