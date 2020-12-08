@@ -13,10 +13,12 @@ module Tezos
         url = Tezos::Rpc.new(chain).url("blocks/head/context/raw/json/delegates")
         res = Typhoeus.get(url)
         all_bakers = JSON.parse(res.body)
+
         found_bakers = Tezos::Baker.pluck(:id)
         missing_bakers = all_bakers - found_bakers
+
         missing_bakers.each do |id|
-          Tezos::Baker.create(id: id, chain: chain)
+          Tezos::Baker.create(id: id, chain: chain, active: active_bakers.include?(id))
         end
       end
 
