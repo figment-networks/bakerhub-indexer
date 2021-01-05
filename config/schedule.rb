@@ -11,7 +11,7 @@ job_type :rake, [
 ].join( ' && ' )
 
 
-every 1.minute do
-  rake 'sync', output: log_path('tezos')
-  rake 'sync_governance', output: log_path('tezos')
-end
+# every 1.minute do
+#   rake 'sync', output: log_path('tezos')
+#   rake 'sync_governance', output: log_path('tezos')
+# end
