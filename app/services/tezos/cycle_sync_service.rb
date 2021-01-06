@@ -212,7 +212,7 @@ module Tezos
     private
 
     def hydra
-      @hydra ||= Typhoeus::Hydra.new(max_concurrency: 50)
+      @hydra ||= Typhoeus::Hydra.new(max_concurrency: 100)
     end
   end
 end
