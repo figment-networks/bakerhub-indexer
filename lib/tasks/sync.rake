@@ -30,8 +30,8 @@ task sync: :environment do
     incomplete_local_cycles = Tezos::Cycle.where.not(all_blocks_synced: true).order(id: :asc).pluck(:id)
     missing_local_cycles    = (0..current_cycle).to_a - Tezos::Cycle.pluck(:id)
 
-    incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
-    missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block).run }
+    incomplete_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block, 100).run }
+    missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block, 100).run }
 
     # SYNC BAKER ACTIVATIONS
     Tezos::BakerActivationsSyncService.new(chain, latest_block).run

@@ -2,13 +2,14 @@ module Tezos
   class CycleSyncService
     include Tezos::Timer
 
-    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :events
+    attr_reader :chain, :cycle_number, :cycle, :latest_block, :blocks, :events, :max_blocks
 
-    def initialize(chain, cycle_number, latest_block)
+    def initialize(chain, cycle_number, latest_block, max_blocks = nil)
       @chain = chain
       @cycle_number = cycle_number
       @latest_block = latest_block
       @cycle = Tezos::Cycle.find_or_create_by(id: cycle_number, chain: chain)
+      @max_blocks = max_blocks
     end
 
     def run
@@ -42,6 +43,10 @@ module Tezos
       cycle.blocks.reload
       found_heights = cycle.blocks.pluck(:id)
       missing_heights = all_heights - found_heights
+
+      if max_blocks.present?
+        missing_heights = missing_heights[0..max_blocks - 1]
+      end
 
       if missing_heights.any?
         time "Get info for #{missing_heights.length} blocks #{missing_heights.first}..#{missing_heights.last}" do
