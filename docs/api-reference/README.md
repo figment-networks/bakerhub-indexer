@@ -181,6 +181,34 @@ Indexer::Baker.retrieve("tz1Scdr2HsZiQjc7bHMeBbmDRXYVvdhjJbBh")
 }
 ```
 
+### Retrieve a Baker's Staking Balance <Badge text="GET"/>
+
+`https://bakerhub-indexer.figment.network/tezos/bakers/:id/staking_balance`
+
+Get the staking balance for a single Baker
+
+**Path Params**
+
+Param | Type | Notes
+------|------|------
+id * | string | Baker address
+block | string | Block you would like the staking balance for. Defaults to 'head'
+
+```ruby
+Indexer::Baker.staking_balance("tz1Scdr2HsZiQjc7bHMeBbmDRXYVvdhjJbBh", "head")
+```
+
+**Example Response**
+
+```js
+{
+  "id": "tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA",
+  "name": null,
+  "url": "http://localhost:3000/tezos/bakers/tz2Q7Km98GPzV1JLNpkrQrSo5YUhPfDp6LmA",
+  "staking_balance": 123123
+}
+```
+
 ## Cycles
 
 ### Retrieve a Cycle <Badge text="GET"/>
