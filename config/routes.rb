@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :events, only: :index
     resources :bakers, only: [:index, :show] do
       get :count, on: :collection
+      get :staking_balance, on: :member
     end
     resources :voting_periods, only: [:index, :show]
     resources :proposals, only: [:index, :show]

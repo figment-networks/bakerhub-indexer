@@ -35,4 +35,11 @@ class Tezos::Baker < ApplicationRecord
     end
     Tezos::BakingStats.new(data)
   end
+
+  def staking_balance(block: 'head')
+    balance = Tezos::Rpc.get("blocks/#{block}/context/delegates/#{id}/staking_balance")
+    balance.to_i
+  rescue
+    nil
+  end
 end
