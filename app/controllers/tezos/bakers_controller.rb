@@ -1,5 +1,5 @@
 class Tezos::BakersController < ApplicationController
-  before_action :set_tezos_baker, only: [:show]
+  before_action :set_tezos_baker, only: [:show, :staking_balance]
 
   # GET /tezos/bakers
   # GET /tezos/bakers.json
@@ -16,6 +16,11 @@ class Tezos::BakersController < ApplicationController
   # GET /tezos/bakers/1
   # GET /tezos/bakers/1.json
   def show
+  end
+
+  # GET /tezos/bakers/:id/staking_balance.json
+  def staking_balance
+    @block = params[:block]
   end
 
   private
