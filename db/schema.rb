@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_02_192128) do
+ActiveRecord::Schema.define(version: 2021_02_16_002835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 2020_12_02_192128) do
     t.bigint "reward"
     t.integer "slot"
     t.integer "priority"
+    t.jsonb "data", default: {}
     t.index ["block_id"], name: "index_tezos_events_on_block_id"
     t.index ["receiver_id"], name: "index_tezos_events_on_receiver_id"
     t.index ["related_block_id"], name: "index_tezos_events_on_related_block_id"
