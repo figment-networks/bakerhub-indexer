@@ -6,4 +6,14 @@ class Tezos::Event < ApplicationRecord
 
   delegate :name, to: :sender, prefix: true
   delegate :name, to: :receiver, prefix: true, allow_nil: true
+
+  store_accessor :data, :to, :from
+
+  def delta
+    nil
+  end
+
+  def percent_change
+    nil
+  end
 end

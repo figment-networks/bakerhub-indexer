@@ -7,5 +7,9 @@ json.extract! event, :id,
                      :receiver_name,
                      :reward,
                      :priority,
-                     :slot
+                     :slot,
+                     :to,
+                     :from,
+                     :delta,
+                     :percentage_change
 json.type event.type.demodulize.underscore
