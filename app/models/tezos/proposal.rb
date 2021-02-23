@@ -8,7 +8,7 @@ class Tezos::Proposal < ApplicationRecord
     end
 
     data = Tezos::Rpc.new(self.chain).get("blocks/head/metadata")
-    current_period = data["level"]["voting_period"]
+    current_period = data["voting_period_info"]["voting_period"]["index"]
     elapsed_periods = current_period - self.start_period
 
     if elapsed_periods >= 4

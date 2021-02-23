@@ -13,8 +13,8 @@ task sync_governance: :environment do
     chains.each do |chain|
       # SYNC PROPOSALS
       data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
-      current_period = data["level"]["voting_period"]
-      latest_block  = data["level"]["level"]
+      current_period = data["voting_period_info"]["voting_period"]["index"]
+      latest_block  = data["level_info"]["level"]
 
       Rails.logger.debug "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
 

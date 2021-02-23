@@ -30,7 +30,7 @@ module Tezos
 
         url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block}")
         block = JSON.parse(Typhoeus.get(url).body)
-        period_type = block["metadata"]["voting_period_kind"]
+        period_type = block["metadata"]["voting_period_info"]["voting_period"]["kind"]
         starting_time = block["header"]["timestamp"]
         block_hash = block["hash"]
 
