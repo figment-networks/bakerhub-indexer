@@ -59,7 +59,7 @@ module Tezos
             request.on_complete do |response|
               if response.success?
                 begin
-                  block_info = JSON.parse(response.body)
+                  block_info = JSON.parse(response.body, max_nesting: false)
 
                   ## Calculate bitmask of endorsed slots for previous block ##################
                   if height > 2
