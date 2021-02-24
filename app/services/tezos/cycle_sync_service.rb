@@ -139,7 +139,7 @@ module Tezos
                   hydra.queue(sync.request)
                 rescue Exception => e
                   puts "ERROR PARSING BLOCK #{height}"
-                  puts response.body
+                  # puts response.body
                 end
               end
             end
