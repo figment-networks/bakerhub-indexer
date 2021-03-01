@@ -2,6 +2,8 @@ class Tezos::VotingPeriod < ApplicationRecord
   belongs_to :chain
   has_many :ballots
 
+  validates :period_start_time, :period_type, presence: true
+
   def quorum_reached?
     rolls_voted = self.ballots.sum(&:rolls)
     return false if self.quorum.blank?
