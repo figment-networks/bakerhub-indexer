@@ -29,7 +29,7 @@ module Tezos
         quorum = request.body
 
         url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block}")
-        block = JSON.parse(Typhoeus.get(url).body)
+        block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
         period_type = block["metadata"]["voting_period_info"]["voting_period"]["kind"]
         starting_time = block["header"]["timestamp"]
         block_hash = block["hash"]
@@ -48,7 +48,7 @@ module Tezos
           if response.response_code == 404
             Rails.logger.debug "Error retrieving voting info"
           else
-            voting = JSON.parse(response.body)
+            voting = JSON.parse(response.body, max_nesting: false)
             total_voters = voting.count
             total_rolls = voting.sum { |v| v["rolls"] }
             @voting_period.update_columns(voting_power: voting, total_rolls: total_rolls, total_voters: total_voters)
@@ -57,7 +57,7 @@ module Tezos
 
         if @ending_block <= @latest_block
           url = Tezos::Rpc.new(@chain).url("blocks/#{@ending_block}")
-          block = JSON.parse(Typhoeus.get(url).body)
+          block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
           ending_time = block["header"]["timestamp"]
         end
 
@@ -95,7 +95,7 @@ module Tezos
 
           request.on_complete do |response|
             if response.success?
-              block_info = JSON.parse(response.body)
+              block_info = JSON.parse(response.body, max_nesting: false)
               process_voting_for_block(block_info)
               blocks = @voting_period.blocks_to_sync
               blocks.delete(height)
