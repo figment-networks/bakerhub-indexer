@@ -21,7 +21,7 @@ task sync_governance: :environment do
 
       current_period.downto(0).each do |period|
         # Find record in db
-        if pd = Tezos::VotingPeriod.find(period)
+        if pd = Tezos::VotingPeriod.find_by(id: period)
           if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
             Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block).run
           end
