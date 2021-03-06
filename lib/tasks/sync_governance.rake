@@ -16,7 +16,7 @@ task sync_governance: :environment do
       latest_block   = data["level_info"]["level"]
       current_period = data["voting_period_info"]["voting_period"]["index"]
       start_block    = data["voting_period_info"]["voting_period"]["start_position"]
-      end_block      = starting_block + data["voting_period_info"]["position"] + data["voting_period_info"]["remaining"]
+      end_block      = start_block + data["voting_period_info"]["position"] + data["voting_period_info"]["remaining"]
       Rails.logger.debug "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
 
       current_period.downto(0).each do |period|
