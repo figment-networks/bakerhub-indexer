@@ -22,7 +22,12 @@ class Tezos::VotingPeriod < ApplicationRecord
   alias supermajority_reached supermajority_reached?
 
   def end_time_approximation
-    return nil if period_start_time.nil?
-    self.period_start_time + 22.days + 18.hours
+    return nil if period_start_time.nil? || length_in_blocks.nil?
+    period_start_time + length_in_blocks.minutes
+  end
+
+  def length_in_blocks
+    return if end_position.nil? || start_position.nil?
+    end_position - start_position
   end
 end

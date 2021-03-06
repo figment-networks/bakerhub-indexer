@@ -2,24 +2,29 @@ module Tezos
   class GovernanceSyncService
     include Tezos::Timer
 
-    def initialize(chain, voting_period, latest_block)
+    def initialize(chain, voting_period, starting_block, ending_block, latest_block)
       @chain = chain
       @period_number = voting_period
       @voting_period = Tezos::VotingPeriod.find_or_create_by(id: voting_period, chain: chain)
       @latest_block = latest_block
-      @starting_block = (voting_period * 32768) + 1
-      @ending_block = (voting_period + 1) * 32768
+      @starting_block = starting_block
+      @ending_block = ending_block
 
       @proposals = 0
       @ballots = 0
     end
 
     def run
+      set_start_and_end_position
       get_voting_period_info
       get_proposal_and_ballot_info
       if @voting_period.all_blocks_synced
         perform_end_of_period_calculations
       end
+    end
+
+    def set_start_and_end_position
+      @voting_period.update(start_position: @starting_block, end_position: @ending_block)
     end
 
     def get_voting_period_info
