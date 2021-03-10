@@ -29,6 +29,7 @@ module Tezos
     end
 
     def set_start_and_end_position
+      return if @voting_period.start_position.present && @voting_period.end_position.present?
       @voting_period.update(start_position: @starting_block, end_position: @ending_block)
     end
 
