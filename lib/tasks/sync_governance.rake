@@ -12,6 +12,7 @@ task sync_governance: :environment do
 
     chains.each do |chain|
       # Get current period and start block from RPC; calculate end_block
+      # TODO: Handle protocols before Edo
       data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
       latest_block   = data["level_info"]["level"]
       current_period = data["voting_period_info"]["voting_period"]["index"]
@@ -21,15 +22,14 @@ task sync_governance: :environment do
 
       current_period.downto(0).each do |period|
         # Find record in db
-        if pd = Tezos::VotingPeriod.find_by(id: period)
-          if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
-            Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block).run
-          end
+        pd = Tezos::VotingPeriod.find_by(id: period)
+        if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
+          Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block).run
         end
 
         # Get previous period start_block from RPC. we know current period start_block - 1 equals previous period end block.
         end_block = start_block - 1
-        # TODO: look up previous period in database and track whether it's been corrected. skip if it has.
+        puts "Look up data for period #{period} with end block #{end_block}"
         data = Tezos::Rpc.new(chain).get("blocks/#{end_block}/metadata")
         start_block = data["voting_period_info"]["voting_period"]["start_position"]
       end

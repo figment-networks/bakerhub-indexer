@@ -5,10 +5,15 @@ module Tezos
     def initialize(chain, voting_period, starting_block, ending_block, latest_block)
       @chain = chain
       @period_number = voting_period
-      @voting_period = Tezos::VotingPeriod.find_or_create_by(id: voting_period, chain: chain)
       @latest_block = latest_block
       @starting_block = starting_block
       @ending_block = ending_block
+      @voting_period = Tezos::VotingPeriod.find_or_create_by(id: voting_period, chain: chain) do |block|
+        block.period_type = start_block_data["metadata"]["voting_period_info"]["voting_period"]["kind"]
+        block.period_start_block = @starting_block
+        block.period_start_time = start_block_data["header"]["timestamp"]
+        block.period_end_block = @ending_block
+      end
 
       @proposals = 0
       @ballots = 0
@@ -33,11 +38,8 @@ module Tezos
         request = Typhoeus.get(url)
         quorum = request.body
 
-        url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block}")
-        block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
-        period_type = block["metadata"]["voting_period_info"]["voting_period"]["kind"]
-        starting_time = block["header"]["timestamp"]
-        block_hash = block["hash"]
+        period_type = start_block_data["metadata"]["voting_period_info"]["voting_period"]["kind"]
+        block_hash = start_block_data["hash"]
 
         # Testing period has no proposal submission or voting, can skip block sync
         # Otherwise, if period already exists, see if blocks were already processed
@@ -67,11 +69,6 @@ module Tezos
         end
 
         @voting_period.update_columns(
-                    chain_id: @chain.id,
-                    period_type: period_type,
-                    period_start_block: @starting_block,
-                    period_start_time: starting_time,
-                    period_end_block: @ending_block,
                     period_end_time: ending_time,
                     quorum: quorum,
                     all_blocks_synced: skip_block_sync
@@ -221,6 +218,13 @@ module Tezos
 
     def hydra
       @hydra ||= Typhoeus::Hydra.new(max_concurrency: 100)
+    end
+
+    def start_block_data
+      @start_block_data ||= begin
+        url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block}")
+        block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
+      end
     end
 
   end
