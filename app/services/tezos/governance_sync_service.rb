@@ -223,7 +223,7 @@ module Tezos
 
     def start_block_data
       @start_block_data ||= begin
-        url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block}")
+        url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block + 1}")
         block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
       end
     end
