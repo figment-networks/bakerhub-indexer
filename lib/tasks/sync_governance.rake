@@ -10,6 +10,19 @@ task sync_governance: :environment do
       next
     end
 
+
+    # TODO: GET START AND END USING THIS DATA
+    # data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
+    # current_period = data["voting_period_info"]["voting_period"]["index"]
+                  # OR data["level"]["voting_period"]
+    # start_block    = data["voting_period"]["start_positon"] + 1
+                  # OR data["level"]["level"] - data["level"]["voting_period_position"]
+
+    # constants = Tezos::Rpc.new(chain).get("blocks/#{start_block}/context/constants")
+    # blocks_per_voting_period = constants["blocks_per_voting_period"]
+    # end_block = start_block + blocks_per_voting_period
+
+
     chains.each do |chain|
       # Get current period and start block from RPC; calculate end_block
       # TODO: Handle protocols before Edo
