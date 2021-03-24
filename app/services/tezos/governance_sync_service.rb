@@ -2,16 +2,20 @@ module Tezos
   class GovernanceSyncService
     include Tezos::Timer
 
-    def initialize(chain, voting_period, starting_block, ending_block, latest_block)
+    attr_reader :start_block_data
+
+    def initialize(chain, voting_period, starting_block, ending_block, latest_block, start_block_data)
       @chain = chain
       @period_number = voting_period
       @latest_block = latest_block
       @starting_block = starting_block
       @ending_block = ending_block
+
+      @start_block_data = start_block_data
       @voting_period = Tezos::VotingPeriod.find_or_create_by(id: voting_period, chain: chain) do |block|
-        block.period_type = start_block_data["metadata"]["voting_period_info"]["voting_period"]["kind"]
+        block.period_type = start_block_data.voting_period_kind
         block.period_start_block = @starting_block
-        block.period_start_time = start_block_data["header"]["timestamp"]
+        block.period_start_time = start_block_data.timestamp
         block.period_end_block = @ending_block
       end
 
@@ -39,13 +43,12 @@ module Tezos
         request = Typhoeus.get(url)
         quorum = request.body
 
-        period_type = start_block_data["metadata"]["voting_period_info"]["voting_period"]["kind"]
-        block_hash = start_block_data["hash"]
+        block_hash = start_block_data.hash
 
         # Testing period has no proposal submission or voting, can skip block sync
         # Otherwise, if period already exists, see if blocks were already processed
         # in case process errored out before voting results were calculated
-        skip_block_sync = period_type == 'testing' || @voting_period.all_blocks_synced?
+        skip_block_sync = start_block_data.voting_period_kind == 'testing' || @voting_period.all_blocks_synced?
 
         if @voting_period.voting_power == nil
           url = Tezos::Rpc.new(@chain).url("blocks/#{block_hash}/votes/listings")
@@ -220,13 +223,6 @@ module Tezos
     def hydra
       @hydra ||= Typhoeus::Hydra.new(max_concurrency: 100)
     end
-
-    def start_block_data
-      @start_block_data ||= begin
-        url = Tezos::Rpc.new(@chain).url("blocks/#{@starting_block + 1}")
-        block = JSON.parse(Typhoeus.get(url).body, max_nesting: false)
-      end
-    end
-
+    
   end
 end
