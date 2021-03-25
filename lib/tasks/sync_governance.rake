@@ -27,7 +27,7 @@ task sync_governance: :environment do
 
         puts "SYNC PERIOD #{period} (start #{start_block} to end #{end_block})"
 
-        if period > 39 && (pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?)
+        if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
           Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block, block_data).run
         end
 
