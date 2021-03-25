@@ -25,8 +25,6 @@ task sync_governance: :environment do
         start_block    = block_data.voting_period_start_block
         end_block      = block_data.voting_period_end_block
 
-        puts "SYNC PERIOD #{period} (start #{start_block} to end #{end_block})"
-
         if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
           Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block, block_data).run
         end
