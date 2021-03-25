@@ -1,8 +1,9 @@
 module Tezos
   class BlockData
-    attr_accessor :metadata, :hash, :timestamp
+    attr_accessor :metadata, :hash, :timestamp, :chain
 
-    def initialize(data)
+    def initialize(data, chain)
+      self.chain = chain
       self.metadata = data["metadata"]
       self.hash = data["hash"]
       self.timestamp = data["header"]["timestamp"]
@@ -10,7 +11,7 @@ module Tezos
 
     def self.retrieve(chain: Chain.primary, block_id: "head")
       data = Rpc.new(chain).get("blocks/#{block_id}")
-      new(data)
+      new(data, chain)
     end
 
     def protocol
@@ -61,12 +62,26 @@ module Tezos
       end
     end
 
+    def voting_period_end_block
+      voting_period_start_block + blocks_per_voting_period - 1
+    end
+
+    def blocks_per_voting_period
+      constants["blocks_per_voting_period"]
+    end
+
     def voting_period_kind
       if metadata["voting_period_info"]
         metadata["voting_period_info"]["voting_period"]["kind"]
       else
         metadata["voting_period_kind"]
       end
+    end
+
+    private
+
+    def constants
+      @constants ||= Tezos::Rpc.new(chain).get("blocks/#{voting_period_start_block}/context/constants")
     end
   end
 end
