@@ -21,13 +21,12 @@ task sync_governance: :environment do
       # Cycle through voting periods and sync those that are a) missing, b) incomplete, or c) don't have start / end positions
       0.upto(current_period).each do |period|
         pd = Tezos::VotingPeriod.find_by(id: period)
+        block_data     = Tezos::BlockData.retrieve(block_id: start_block, chain: chain)
+        start_block    = block_data.voting_period_start_block
+        constants      = rpc.get("blocks/#{start_block}/context/constants")
+        end_block      = start_block + constants["blocks_per_voting_period"]
 
         if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
-          block_data     = Tezos::BlockData.retrieve(block_id: start_block, chain: chain)
-          start_block    = block_data.voting_period_start_block
-          constants      = rpc.get("blocks/#{start_block}/context/constants")
-          end_block      = start_block + constants["blocks_per_voting_period"]
-
           Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block, block_data).run
         end
 
