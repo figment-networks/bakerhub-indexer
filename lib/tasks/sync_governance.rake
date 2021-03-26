@@ -11,27 +11,25 @@ task sync_governance: :environment do
     end
 
     chains.each do |chain|
-      # Get current period and start block from RPC; calculate end_block
-      # TODO: Handle protocols before Edo
-      data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
-      latest_block   = data["level_info"]["level"]
-      current_period = data["voting_period_info"]["voting_period"]["index"]
-      start_block    = data["voting_period_info"]["voting_period"]["start_position"]
-      end_block      = start_block + data["voting_period_info"]["position"] + data["voting_period_info"]["remaining"]
+      rpc            = Tezos::Rpc.new(chain)
+      start_block    = 2
+      block_data     = Tezos::BlockData.retrieve(block_id: 'head', chain: chain)
+      latest_block   = block_data.level
+      current_period = block_data.voting_period
       Rails.logger.debug "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
 
-      current_period.downto(0).each do |period|
-        # Find record in db
+      # Cycle through voting periods and sync those that are a) missing, b) incomplete, or c) don't have start / end positions
+      0.upto(current_period).each do |period|
         pd = Tezos::VotingPeriod.find_by(id: period)
+        block_data     = Tezos::BlockData.retrieve(block_id: start_block, chain: chain)
+        start_block    = block_data.voting_period_start_block
+        end_block      = block_data.voting_period_end_block
+
         if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
-          Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block).run
+          Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block, block_data).run
         end
 
-        # Get previous period start_block from RPC. we know current period start_block - 1 equals previous period end block.
-        end_block = start_block - 1
-        puts "Look up data for period #{period} with end block #{end_block}"
-        data = Tezos::Rpc.new(chain).get("blocks/#{end_block}/metadata")
-        start_block = data["voting_period_info"]["voting_period"]["start_position"]
+        start_block = end_block + 1
       end
     end
   end
