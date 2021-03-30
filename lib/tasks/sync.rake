@@ -21,9 +21,9 @@ task sync: :environment do
 
     # SYNC CYCLES
     # TODO: Save current cycle and latest block to Cycle
-    data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
-    current_cycle = data["level_info"]["cycle"]
-    latest_block  = data["level_info"]["level"]
+    data = Tezos::BlockData.retrieve(block_id: 'head', chain: chain)
+    current_cycle = data.cycle
+    latest_block = data.level
 
     puts "#{chain.name} is currently on Cycle #{current_cycle} at Block #{latest_block}"
 
