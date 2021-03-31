@@ -7,8 +7,8 @@ class Tezos::Proposal < ApplicationRecord
         return "promoted"
     end
 
-    data = Tezos::Rpc.new(self.chain).get("blocks/head/metadata")
-    current_period = data["voting_period_info"]["voting_period"]["index"]
+    data = Tezos::BlockData.retrieve(block_id: 'head', chain: chain)
+    current_period = data.voting_period
     elapsed_periods = current_period - self.start_period
 
     if elapsed_periods >= 4
