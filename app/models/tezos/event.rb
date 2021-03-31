@@ -13,7 +13,7 @@ class Tezos::Event < ApplicationRecord
     nil
   end
 
-  def percent_change
+  def percentage_change
     nil
   end
 end

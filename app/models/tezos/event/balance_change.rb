@@ -16,7 +16,7 @@ module Tezos
       end
 
       def significant?
-        percent_change.abs >= THRESHOLD
+        percentage_change.abs >= THRESHOLD
       end
 
       def percentage_change
