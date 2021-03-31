@@ -2,6 +2,8 @@ class Tezos::VotingPeriod < ApplicationRecord
   belongs_to :chain
   has_many :ballots
 
+  validates :period_start_time, :period_type, presence: true
+
   def quorum_reached?
     rolls_voted = self.ballots.sum(&:rolls)
     return false if self.quorum.blank?
@@ -20,6 +22,12 @@ class Tezos::VotingPeriod < ApplicationRecord
   alias supermajority_reached supermajority_reached?
 
   def end_time_approximation
-    self.period_start_time + 22.days + 18.hours
+    return nil if period_start_time.nil? || length_in_blocks.nil?
+    period_start_time + length_in_blocks.minutes
+  end
+
+  def length_in_blocks
+    return if end_position.nil? || start_position.nil?
+    end_position - start_position
   end
 end

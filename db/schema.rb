@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_16_002835) do
+ActiveRecord::Schema.define(version: 2021_03_06_000930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,8 @@ ActiveRecord::Schema.define(version: 2021_02_16_002835) do
     t.integer "blocks_to_sync", default: [], array: true
     t.boolean "all_blocks_synced", default: false
     t.boolean "voting_processed", default: false
+    t.integer "start_position"
+    t.integer "end_position"
     t.index ["chain_id"], name: "index_tezos_voting_proposals_on_chain_id"
   end
 

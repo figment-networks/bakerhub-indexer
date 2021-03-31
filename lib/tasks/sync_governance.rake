@@ -11,18 +11,26 @@ task sync_governance: :environment do
     end
 
     chains.each do |chain|
-      # SYNC PROPOSALS
-      data = Tezos::Rpc.new(chain).get("blocks/head/metadata")
-      current_period = data["level"]["voting_period"]
-      latest_block  = data["level"]["level"]
-
+      rpc            = Tezos::Rpc.new(chain)
+      start_block    = 2
+      block_data     = Tezos::BlockData.retrieve(block_id: 'head', chain: chain)
+      latest_block   = block_data.level
+      current_period = block_data.voting_period
       Rails.logger.debug "#{chain.name} is currently on Period #{current_period} at Block #{latest_block}"
 
-      incomplete_local_periods = chain.voting_periods.where.not(voting_processed: true).order(id: :asc).pluck(:id)
-      missing_local_periods    = (0..current_period).to_a - chain.voting_periods.pluck(:id)
+      # Cycle through voting periods and sync those that are a) missing, b) incomplete, or c) don't have start / end positions
+      0.upto(current_period).each do |period|
+        pd = Tezos::VotingPeriod.find_by(id: period)
+        block_data     = Tezos::BlockData.retrieve(block_id: start_block, chain: chain)
+        start_block    = block_data.voting_period_start_block
+        end_block      = block_data.voting_period_end_block
 
-      incomplete_local_periods.each { |p| Tezos::GovernanceSyncService.new(chain, p, latest_block).run }
-      missing_local_periods.each { |p| Tezos::GovernanceSyncService.new(chain, p, latest_block).run }
+        if pd.nil? || !pd.voting_processed || pd.start_position.nil? || pd.end_position.nil?
+          Tezos::GovernanceSyncService.new(chain, period, start_block, end_block, latest_block, block_data).run
+        end
+
+        start_block = end_block + 1
+      end
     end
   end
 end
