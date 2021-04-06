@@ -11,5 +11,6 @@ json.extract! event, :id,
                      :to,
                      :from,
                      :delta,
-                     :percentage_change
+                     :percentage_change,
+                     :initial
 json.type event.type.demodulize.underscore
