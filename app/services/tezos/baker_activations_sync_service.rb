@@ -2,11 +2,13 @@ module Tezos
   class BakerActivationsSyncService
     include Tezos::Timer
 
-    attr_reader :chain, :latest_block
+    attr_reader :chain, :latest_block, :current_cycle, :baker
 
-    def initialize(chain, latest_block)
+    def initialize(chain, block_data)
       @chain = chain
-      @latest_block = latest_block
+      @latest_block = block_data.level
+      @current_cycle = block_data.cycle
+      @baker = block_data.baker
     end
 
     def run
@@ -42,7 +44,12 @@ module Tezos
           baker.update(active: false)
         end
 
-        active_bakers.each do |id|
+        if Rails.env.development?
+          cycle = Tezos::Cycle.find_or_create_by(id: current_cycle, chain: chain)
+          block = Tezos::Block.find_or_create_by(id: latest_block, cycle: cycle, baker_id: baker)
+        end
+
+        active_bakers[0..1].each do |id|
           baker = Tezos::Baker.find(id)
           last_balance_change_event = baker.balance_change_events.order(block_id: :asc).last
 
@@ -51,6 +58,7 @@ module Tezos
               sender_id: id,
               from: nil,
               to: baker.balance(block: latest_block),
+              initial: true,
               block_id: latest_block
             )
           else

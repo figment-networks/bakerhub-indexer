@@ -34,6 +34,6 @@ task sync: :environment do
     missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block, 100).run }
 
     # SYNC BAKER ACTIVATIONS
-    Tezos::BakerActivationsSyncService.new(chain, latest_block).run
+    Tezos::BakerActivationsSyncService.new(chain, data).run
   end
 end

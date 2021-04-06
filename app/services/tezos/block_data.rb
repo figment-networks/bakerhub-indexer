@@ -1,10 +1,11 @@
 module Tezos
   class BlockData
-    attr_accessor :metadata, :hash, :timestamp, :chain
+    attr_accessor :metadata, :header, :hash, :timestamp, :chain
 
     def initialize(data, chain)
       self.chain = chain
       self.metadata = data["metadata"]
+      self.header = data["header"]
       self.hash = data["hash"]
       self.timestamp = data["header"]["timestamp"]
     end
@@ -12,6 +13,14 @@ module Tezos
     def self.retrieve(chain: Chain.primary, block_id: "head")
       data = Rpc.new(chain).get("blocks/#{block_id}")
       new(data, chain)
+    end
+
+    def baker
+      metadata["baker"]
+    end
+
+    def priority
+      header["priority"]
     end
 
     def protocol

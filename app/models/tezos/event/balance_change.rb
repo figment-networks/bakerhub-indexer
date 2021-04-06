@@ -5,7 +5,7 @@ module Tezos
 
       alias_attribute :baker, :sender
 
-      store_accessor :data, :to, :from
+      store_accessor :data, :to, :from, :initial
 
       def delta
         to - from
@@ -21,6 +21,10 @@ module Tezos
 
       def percentage_change
         to.to_d / from.to_d - 1
+      end
+
+      def initial?
+        initial == true
       end
     end
   end
