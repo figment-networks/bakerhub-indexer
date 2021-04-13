@@ -13,6 +13,9 @@ module Tezos
 
     def run
       time "Syncing baker activations and deactivations" do
+        # Make sure latest block has actually been sync'd -- needs to exist in database for foreign keys
+        return unless Tezos::Block.exists?(id: latest_block)
+
         url = Tezos::Rpc.new(chain).url("blocks/#{latest_block}/context/raw/json/delegates")
         res = Typhoeus.get(url)
         all_bakers = JSON.parse(res.body)
@@ -44,12 +47,7 @@ module Tezos
           baker.update(active: false)
         end
 
-        if Rails.env.development?
-          cycle = Tezos::Cycle.find_or_create_by(id: current_cycle, chain: chain)
-          block = Tezos::Block.find_or_create_by(id: latest_block, cycle: cycle, baker_id: baker)
-        end
-
-        active_bakers[0..1].each do |id|
+        active_bakers.each do |id|
           baker = Tezos::Baker.find(id)
           last_balance_change_event = baker.balance_change_events.order(block_id: :asc).last
 
