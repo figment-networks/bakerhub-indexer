@@ -29,6 +29,8 @@ class Tezos::EventsController < ApplicationController
       events = events.where("block_id > ?", params[:after_height].to_i)
     end
 
+    events = events.where.not("data @> ?", { initial: true }.to_json)
+
     if params[:paginate] == 'false'
       @pagy = {}
       @events = events

@@ -2,19 +2,20 @@ module Tezos
   class BakerSyncService
     include Tezos::Timer
 
-    attr_reader :chain
+    attr_reader :chain, :latest_block
 
-    def initialize(chain)
+    def initialize(chain, latest_block)
       @chain = chain
+      @latest_block = latest_block
     end
 
     def run
       time "Syncing bakers" do
-        url = Tezos::Rpc.new(chain).url("blocks/head/context/raw/json/delegates")
+        url = Tezos::Rpc.new(chain).url("blocks/#{latest_block}/context/raw/json/delegates")
         res = Typhoeus.get(url)
         all_bakers = JSON.parse(res.body)
 
-        url = Tezos::Rpc.new(chain).url("blocks/head/context/delegates", "active=true")
+        url = Tezos::Rpc.new(chain).url("blocks/#{latest_block}/context/delegates", "active=true")
         res = Typhoeus.get(url)
         active_bakers = JSON.parse(res.body)
 

@@ -16,14 +16,14 @@ task sync: :environment do
       name: "Mainnet"
     )
 
-    # SYNC BAKERS
-    Tezos::BakerSyncService.new(chain).run
-
     # SYNC CYCLES
     # TODO: Save current cycle and latest block to Cycle
     data = Tezos::BlockData.retrieve(block_id: 'head', chain: chain)
     current_cycle = data.cycle
     latest_block = data.level
+
+    # SYNC BAKERS
+    Tezos::BakerSyncService.new(chain, latest_block).run
 
     puts "#{chain.name} is currently on Cycle #{current_cycle} at Block #{latest_block}"
 
@@ -34,6 +34,6 @@ task sync: :environment do
     missing_local_cycles.each { |n| Tezos::CycleSyncService.new(chain, n, latest_block, 100).run }
 
     # SYNC BAKER ACTIVATIONS
-    Tezos::BakerActivationsSyncService.new(chain, latest_block).run
+    Tezos::BakerActivationsSyncService.new(chain, data).run
   end
 end

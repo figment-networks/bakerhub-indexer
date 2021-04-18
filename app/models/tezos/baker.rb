@@ -4,6 +4,7 @@ class Tezos::Baker < ApplicationRecord
   has_many :baking_rights, class_name: "Tezos::Block", inverse_of: :intended_baker
   has_many :missed_bakes
   has_many :ballots
+  has_many :balance_change_events, class_name: "Tezos::Event::BalanceChange", inverse_of: :sender, foreign_key: :sender_id
 
   alias_attribute :address, :id
 
@@ -34,6 +35,13 @@ class Tezos::Baker < ApplicationRecord
       data[:blocks_stolen] += stats.blocks_stolen
     end
     Tezos::BakingStats.new(data)
+  end
+
+  def balance(block: 'head')
+    balance = Tezos::Rpc.get("blocks/#{block}/context/delegates/#{id}/balance")
+    balance.to_i
+  rescue
+    nil
   end
 
   def staking_balance(block: 'head')
