@@ -7,6 +7,8 @@ module Tezos
 
       store_accessor :data, :to, :from, :initial
 
+      validates_presence_of :to
+
       def delta
         to - from
       end
