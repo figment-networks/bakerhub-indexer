@@ -66,7 +66,7 @@ module Tezos
                     res = Tezos::EndorsementResults.new(height: height, bitmask: 0, endorsers: [])
 
                     block_info["operations"].flatten.each do |op|
-                      endorsements = op["contents"].select { |subop| subop["kind"] == "endorsement" }
+                      endorsements = op["contents"].select { |subop| ["endorsement", "endorsement_with_slot"].include?(subop["kind"]) }
                       endorsements.each do |endorsement|
                         endorsement["metadata"]["slots"].each do |slot|
                           res.set_true(slot + 1) # slots are 1-indexed in EndorsementResults and 0-indexed in RPC result
